@@ -5,17 +5,15 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.7.0, < 4.0.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.5.0, < 4.0.0"
+    }
   }
 }
 
-variable "enable_telemetry" {
-  type        = bool
-  default     = true
-  description = <<DESCRIPTION
-This variable controls whether or not telemetry is enabled for the module.
-For more information see https://aka.ms/avm/telemetryinfo.
-If it is set to false, then no telemetry will be collected.
-DESCRIPTION
+provider "azurerm" {
+  features {}
 }
 
 # This ensures we have unique CAF compliant names for our resources.
@@ -24,16 +22,19 @@ module "naming" {
   version = "0.3.0"
 }
 
-# This is required for resource modules
-resource "azurerm_resource_group" "this" {
-  name     = module.naming.resource_group.name_unique
-  location = "MYLOCATION"
+
+data "azurerm_virtual_desktop_host_pool" "name" {
+  name                = var.host_pool
+  resource_group_name = var.resource_group_name
 }
 
 # This is the module call
-module "MYMODULE" {
-  source = "../../"
-  # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
-  enable_telemetry = var.enable_telemetry
-  # ...
+module "scplan" {
+  source              = "../../"
+  enable_telemetry    = var.enable_telemetry
+  resource_group_name = data.azurerm_virtual_desktop_host_pool.name.resource_group_name
+  location            = data.azurerm_virtual_desktop_host_pool.name.location
+  scalingplan         = var.scalingplan
+  hostpool            = data.azurerm_virtual_desktop_host_pool.name.name
+  hostpooltype        = var.hostpooltype
 }
