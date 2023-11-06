@@ -27,6 +27,13 @@ variable "scalingplan" {
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
   }
 }
+
+variable "time_zone" {
+  type        = string
+  description = "The time zone of the AVD Scaling Plan."
+  default     = "Eastern Standard Time"
+}
+
 variable "hostpool" {
   type        = string
   description = "The name of the AVD Host Pool to assign the application group to."
@@ -132,5 +139,83 @@ A map of diagnostic settings to create on the Key Vault. The map key is delibera
 - `event_hub_authorization_rule_resource_id` - (Optional) The resource ID of the event hub authorization rule to send logs and metrics to.
 - `event_hub_name` - (Optional) The name of the event hub. If none is specified, the default event hub will be selected.
 - `marketplace_partner_resource_id` - (Optional) The full ARM resource ID of the Marketplace resource to which you would like to send Diagnostic LogsLogs.
+DESCRIPTION
+}
+
+variable "schedules" {
+  type = map(object({
+    name                                 = string
+    days_of_week                         = set(string)
+    off_peak_start_time                  = string
+    off_peak_load_balancing_algorithm    = string
+    ramp_down_capacity_threshold_percent = number
+    ramp_down_force_logoff_users         = bool
+    ramp_down_load_balancing_algorithm   = string
+    ramp_down_minimum_hosts_percent      = number
+    ramp_down_notification_message       = string
+    ramp_down_start_time                 = string
+    ramp_down_stop_hosts_when            = string
+    ramp_down_wait_time_minutes          = number
+    peak_start_time                      = string
+    peak_load_balancing_algorithm        = string
+    ramp_up_capacity_threshold_percent   = optional(number)
+    ramp_up_load_balancing_algorithm     = string
+    ramp_up_minimum_hosts_percent        = optional(number)
+    ramp_up_start_time                   = string
+  }))
+  default = {
+    schedule1 = {
+      name                                 = "Weekdays"
+      days_of_week                         = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
+      ramp_up_start_time                   = "05:00"
+      ramp_up_load_balancing_algorithm     = "BreadthFirst"
+      ramp_up_minimum_hosts_percent        = 20
+      ramp_up_capacity_threshold_percent   = 10
+      peak_start_time                      = "09:00"
+      peak_load_balancing_algorithm        = "BreadthFirst"
+      ramp_down_start_time                 = "19:00"
+      ramp_down_load_balancing_algorithm   = "DepthFirst"
+      ramp_down_minimum_hosts_percent      = 10
+      ramp_down_force_logoff_users         = false
+      ramp_down_wait_time_minutes          = 45
+      ramp_down_notification_message       = "Please log off in the next 45 minutes..."
+      ramp_down_capacity_threshold_percent = 5
+      ramp_down_stop_hosts_when            = "ZeroSessions"
+      off_peak_start_time                  = "22:00"
+      off_peak_load_balancing_algorithm    = "DepthFirst"
+    }
+  }
+  nullable = false
+
+  validation {
+    condition = alltrue(
+      [
+        for _, v in var.schedules :
+        v.days_of_week != null || v.off_peak_start_time != null || v.off_peak_load_balancing_algorithm != null || v.ramp_down_capacity_threshold_percent != null || v.ramp_down_force_logoff_users != null || v.ramp_down_load_balancing_algorithm != null || v.ramp_down_minimum_hosts_percent != null || v.ramp_down_notification_message != null || v.ramp_down_start_time != null || v.ramp_down_stop_hosts_when != null || v.ramp_down_wait_time_minutes != null || v.ramp_up_capacity_threshold_percent != null || v.ramp_up_load_balancing_algorithm != null || v.ramp_up_minimum_hosts_percent != null || v.ramp_up_start_time != null
+      ]
+    )
+    error_message = "At least one of `days_of_week`, `off_peak_start_time`, `off_peak_load_balancing_algorithm`, `ramp_down_capacity_threshold_percent`, `ramp_down_force_logoff_users`, `ramp_down_load_balancing_algorithm`, `ramp_down_minimum_hosts_percent`, `ramp_down_notification_message`, `ramp_down_start_time`, `ramp_down_stop_hosts_when`, `ramp_down_wait_time_minutes`, `ramp_up_capacity_threshold_percent`, `ramp_up_load_balancing_algorithm`, `ramp_up_minimum_hosts_percent`, or `ramp_up_start_time`, must be set."
+  }
+  description = <<DESCRIPTION
+A map of schedules to create on AVD Scaling Plan. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+
+- `name` -  The name of the schedule.
+- `days_of_week` -  The days of the week to apply the schedule to. 
+- `off_peak_start_time` -  The start time of the off peak period. 
+- `off_peak_load_balancing_algorithm` -  The load balancing algorithm to use during the off peak period. 
+- `ramp_down_capacity_threshold_percent` -  The capacity threshold percentage to use during the ramp down period. 
+- `ramp_down_force_logoff_users` -  Whether to force log off users during the ramp down period. 
+- `ramp_down_load_balancing_algorithm` -  The load balancing algorithm to use during the ramp down period. 
+- `ramp_down_minimum_hosts_percent` -  The minimum hosts percentage to use during the ramp down period. 
+- `ramp_down_notification_message` -  The notification message to use during the ramp down period. 
+- `ramp_down_start_time` -  The start time of the ramp down period. 
+- `ramp_down_stop_hosts_when` -  When to stop hosts during the ramp down period. 
+- `ramp_down_wait_time_minutes` -  The wait time in minutes to use during the ramp down period. 
+- `peak_start_time` -  The start time of the peak period. 
+- `peak_load_balancing_algorithm` -  The load balancing algorithm to use during the peak period. 
+- `ramp_up_capacity_threshold_percent` - (Optional) The capacity threshold percentage to use during the ramp up period. 
+- `ramp_up_load_balancing_algorithm` -  The load balancing algorithm to use during the ramp up period. 
+- `ramp_up_minimum_hosts_percent` - (Optional) The minimum hosts percentage to use during the ramp up period. 
+- `ramp_up_start_time` -  The start time of the ramp up period. 
 DESCRIPTION
 }

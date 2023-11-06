@@ -26,10 +26,10 @@ resource "azurerm_resource_group" "qs101" {
 }
 
 resource "azapi_resource" "personalscplan" {
-  type                      = "Microsoft.DesktopVirtualization/scalingPlans@2022-10-14-preview"
-  name                      = "personalscplan"
-  parent_id                 = azurerm_resource_group.qs101.id
-  location                  = "eastus"
+  type      = "Microsoft.DesktopVirtualization/scalingPlans@2022-10-14-preview"
+  name      = "personalscplan"
+  parent_id = azurerm_resource_group.qs101.id
+  location  = "eastus"
   body = jsonencode({
     properties = {
       "friendlyName" : "personalscplan",
@@ -43,7 +43,7 @@ resource "azapi_resource" "personalscplan" {
           "scalingPlanEnabled" : true
         }
       ],
-    } 
+    }
   })
 }
 

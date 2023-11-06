@@ -33,4 +33,10 @@ module "scplan" {
   scalingplan         = var.scalingplan
   hostpool            = data.azurerm_virtual_desktop_host_pool.name.name
   hostpooltype        = var.hostpooltype
+  diagnostic_settings = {
+    to_law = {
+      name               = "to-storage-account"
+      storage_account_id = var.storage_account_id
+    }
+  }
 }

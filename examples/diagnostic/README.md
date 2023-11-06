@@ -16,17 +16,13 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azapi"></a> [azapi](#provider\_azapi)
-
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
 
 ## Resources
 
 The following resources are used by this module:
 
-- [azapi_resource.personalscplan](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
-- [azurerm_resource_group.qs101](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_virtual_desktop_host_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
+- [azurerm_virtual_desktop_host_pool.name](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -53,7 +49,7 @@ Description: The name of the AVD Host Pool to assign the application group to.
 
 Type: `string`
 
-Default: `"avdhostpersonal"`
+Default: `"avdhostpool"`
 
 ### <a name="input_hostpooltype"></a> [hostpooltype](#input\_hostpooltype)
 
@@ -61,7 +57,7 @@ Description: The type of the AVD Host Pool to assign the scaling plan.
 
 Type: `string`
 
-Default: `"Personal"`
+Default: `"Pooled"`
 
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
@@ -79,13 +75,33 @@ Type: `string`
 
 Default: `"avdscalingplan"`
 
+### <a name="input_storage_account_id"></a> [storage\_account\_id](#input\_storage\_account\_id)
+
+Description: The ID of the storage account to send diagnostic logs. The storage account must already exist.
+
+Type: `string`
+
+Default: `"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avm-test/providers/Microsoft.Storage/storageAccounts/avmtestdiag"`
+
 ## Outputs
 
 No outputs.
 
 ## Modules
 
-No modules.
+The following Modules are called:
+
+### <a name="module_naming"></a> [naming](#module\_naming)
+
+Source: Azure/naming/azurerm
+
+Version: 0.3.0
+
+### <a name="module_scplan"></a> [scplan](#module\_scplan)
+
+Source: ../../
+
+Version:
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

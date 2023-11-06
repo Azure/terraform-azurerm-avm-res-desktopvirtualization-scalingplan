@@ -31,3 +31,9 @@ variable "hostpooltype" {
   default     = "Pooled"
   description = "The type of the AVD Host Pool to assign the scaling plan."
 }
+
+variable "storage_account_id" {
+  type        = string
+  default     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avm-test/providers/Microsoft.Storage/storageAccounts/avmtestdiag"
+  description = "The ID of the storage account to send diagnostic logs. The storage account must already exist."
+}

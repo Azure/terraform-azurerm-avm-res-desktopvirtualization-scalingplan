@@ -3,48 +3,6 @@
 
 This deploys the module in its simplest form.
 
-```hcl
-terraform {
-  required_version = ">= 1.0.0"
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0.0"
-    }
-  }
-}
-
-variable "enable_telemetry" {
-  type        = bool
-  default     = true
-  description = <<DESCRIPTION
-This variable controls whether or not telemetry is enabled for the module.
-For more information see https://aka.ms/avm/telemetryinfo.
-If it is set to false, then no telemetry will be collected.
-DESCRIPTION
-}
-
-# This ensures we have unique CAF compliant names for our resources.
-module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "0.3.0"
-}
-
-# This is required for resource modules
-resource "azurerm_resource_group" "this" {
-  name     = module.naming.resource_group.name_unique
-  location = "MYLOCATION"
-}
-
-# This is the module call
-module "MYMODULE" {
-  source = "../../"
-  # source             = "Azure/avm-<res/ptn>-<name>/azurerm"
-  enable_telemetry = var.enable_telemetry
-  # ...
-}
-```
-
 <!-- markdownlint-disable MD033 -->
 ## Requirements
 
@@ -64,7 +22,7 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
-- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_virtual_desktop_host_pool.name](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -85,6 +43,38 @@ Type: `bool`
 
 Default: `true`
 
+### <a name="input_host_pool"></a> [host\_pool](#input\_host\_pool)
+
+Description: The name of the AVD Host Pool to assign the application group to.
+
+Type: `string`
+
+Default: `"avdhostpool"`
+
+### <a name="input_hostpooltype"></a> [hostpooltype](#input\_hostpooltype)
+
+Description: The type of the AVD Host Pool to assign the scaling plan.
+
+Type: `string`
+
+Default: `"Pooled"`
+
+### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
+
+Description: The resource group where the AVD Host Pool is deployed.
+
+Type: `string`
+
+Default: `"rg-avm-test"`
+
+### <a name="input_scalingplan"></a> [scalingplan](#input\_scalingplan)
+
+Description: The name of the AVD Scaling Plan.
+
+Type: `string`
+
+Default: `"avdscalingplan"`
+
 ## Outputs
 
 No outputs.
@@ -93,17 +83,17 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_MYMODULE"></a> [MYMODULE](#module\_MYMODULE)
-
-Source: ../../
-
-Version:
-
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
 Source: Azure/naming/azurerm
 
 Version: 0.3.0
+
+### <a name="module_scplan"></a> [scplan](#module\_scplan)
+
+Source: ../../
+
+Version:
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
