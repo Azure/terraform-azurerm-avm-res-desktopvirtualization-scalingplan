@@ -1,5 +1,5 @@
 <!-- BEGIN_TF_DOCS -->
-# tterraform-azurerm-avm-res-desktopvirtualization-scalingplan
+# terraform-azurerm-avm-res-desktopvirtualization-scalingplan
 
 Terraform Azure Verified Modules for deploying Azure Virtual Desktop Scaling Plan
 
