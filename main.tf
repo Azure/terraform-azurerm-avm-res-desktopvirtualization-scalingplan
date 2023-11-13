@@ -1,24 +1,7 @@
-# Terraform Docs: https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_scaling_plan
-data "azurerm_subscription" "current" {}
-
-data "azurerm_client_config" "current" {}
-
-data "azurerm_role_definition" "role" { # access an existing built-in role
-  name = "Desktop Virtualization User"
-}
-
 # Get the Azure Virtual Desktop host pool
 data "azurerm_virtual_desktop_host_pool" "this" {
   name                = var.hostpool
   resource_group_name = var.resource_group_name
-}
-
-data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
-}
-
-data "azuread_service_principal" "spn" {
-  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
 
 # autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios

@@ -118,11 +118,6 @@ variable "hostpool" {
   description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
-variable "hostpooltype" {
-  type        = string
-  description = "The type of the AVD Host Pool to assign the scaling plan."
-}
-
 variable "tags" {
   type        = map(any)
   description = "Map of tags to assign to the Scaling Plan resource."
