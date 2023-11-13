@@ -91,12 +91,6 @@ No outputs.
 
 The following Modules are called:
 
-### <a name="module_naming"></a> [naming](#module\_naming)
-
-Source: Azure/naming/azurerm
-
-Version: 0.3.0
-
 ### <a name="module_scplan"></a> [scplan](#module\_scplan)
 
 Source: ../../
