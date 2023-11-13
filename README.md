@@ -1,19 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# terraform-azurerm-avm-template
+# terraform-azurerm-avm-res-desktopvirtualization-scalingplans
 
-This is a template repo for Terraform Azure Verified Modules.
-
-Things to do:
-
-1. Set up a GitHub repo environment called `test`.
-1. Configure environment protection rule to ensure that approval is required before deploying to this environment.
-1. Create a user-assigned managed identity in your test subscription.
-1. Create a role assignment for the managed identity on your test subscription, use the minimum required role.
-1. Configure federated identity credentials on the user assigned managed identity. Use the GitHub environment.
-1. Create the following environment secrets on the `test` environment:
-   1. AZURE\_CLIENT\_ID
-   1. AZURE\_TENANT\_ID
-   1. AZURE\_SUBSCRIPTION\_ID
+Module to deploy Azure Virtual Desktop Scaling Plan in Azure.
 
 <!-- markdownlint-disable MD033 -->
 ## Requirements
@@ -290,7 +278,15 @@ Default: `"avm_"`
 
 ## Outputs
 
-No outputs.
+The following outputs are exported:
+
+### <a name="output_scaling_plan_id"></a> [scaling\_plan\_id](#output\_scaling\_plan\_id)
+
+Description: The ID of the scaling plan
+
+### <a name="output_scaling_plan_name"></a> [scaling\_plan\_name](#output\_scaling\_plan\_name)
+
+Description: The name of the scaling plan
 
 ## Modules
 

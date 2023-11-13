@@ -1,3 +1,3 @@
-# Default example
+# Diagnositc example
 
-This deploys the module in its simplest form.
+This deploys the module with Diagnostic settings enabled to send to a storage account.

@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
-# Default example
+# Diagnositc example
 
-This deploys the module in its simplest form.
+This deploys the module with Diagnostic settings enabled to send to a storage account.
 
 <!-- markdownlint-disable MD033 -->
 ## Requirements
@@ -16,7 +16,7 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (3.80.0)
 
 ## Resources
 
