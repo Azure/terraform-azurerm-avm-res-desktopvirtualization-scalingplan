@@ -25,5 +25,4 @@ module "scplan" {
   location            = data.azurerm_virtual_desktop_host_pool.name.location
   scalingplan         = var.scalingplan
   hostpool            = data.azurerm_virtual_desktop_host_pool.name.name
-  hostpooltype        = var.hostpooltype
 }

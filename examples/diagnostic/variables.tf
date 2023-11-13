@@ -31,9 +31,3 @@ variable "location" {
   default     = "eastus"
   description = "The Azure location where the resources will be deployed."
 }
-
-variable "hostpooltype" {
-  type        = string
-  default     = "Pooled"
-  description = "The type of the AVD Host Pool to assign the scaling plan."
-}

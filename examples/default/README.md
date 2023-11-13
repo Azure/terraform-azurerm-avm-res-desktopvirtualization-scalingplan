@@ -31,7 +31,6 @@ module "scplan" {
   location            = data.azurerm_virtual_desktop_host_pool.name.location
   scalingplan         = var.scalingplan
   hostpool            = data.azurerm_virtual_desktop_host_pool.name.name
-  hostpooltype        = var.hostpooltype
 }
 ```
 
@@ -82,14 +81,6 @@ Description: The name of the AVD Host Pool to assign the scaling plan to.
 Type: `string`
 
 Default: `"avdhostpool"`
-
-### <a name="input_hostpooltype"></a> [hostpooltype](#input\_hostpooltype)
-
-Description: The type of the AVD Host Pool to assign the scaling plan.
-
-Type: `string`
-
-Default: `"Pooled"`
 
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 

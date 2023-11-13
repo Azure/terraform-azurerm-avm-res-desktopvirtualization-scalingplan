@@ -25,9 +25,3 @@ variable "resource_group_name" {
   default     = "rg-avm-test"
   description = "The resource group where the AVD Host Pool is deployed."
 }
-
-variable "hostpooltype" {
-  type        = string
-  default     = "Pooled"
-  description = "The type of the AVD Host Pool to assign the scaling plan."
-}
