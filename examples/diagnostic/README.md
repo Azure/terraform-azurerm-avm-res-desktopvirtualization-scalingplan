@@ -103,7 +103,7 @@ Description: The name of the AVD Host Pool to assign the scaling plan to.
 
 Type: `string`
 
-Default: `"avdhostpool"`
+Default: `"avdhostpool1"`
 
 ### <a name="input_location"></a> [location](#input\_location)
 
