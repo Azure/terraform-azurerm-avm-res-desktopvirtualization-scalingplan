@@ -10,7 +10,7 @@ DESCRIPTION
 
 variable "scalingplan" {
   type        = string
-  default     = "avdscalingplan"
+  default     = "avdsdiagcalingplan"
   description = "The name of the AVD Scaling Plan."
 }
 
