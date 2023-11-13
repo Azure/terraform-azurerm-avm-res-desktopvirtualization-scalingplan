@@ -28,7 +28,7 @@ data "azurerm_virtual_desktop_host_pool" "name" {
 resource "azurerm_storage_account" "this" {
   name                     = module.naming.storage_account.name_unique
   resource_group_name      = var.resource_group_name
-  location                 = var.resource_group_name.location
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }

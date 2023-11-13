@@ -26,6 +26,12 @@ variable "resource_group_name" {
   description = "The resource group where the AVD Host Pool is deployed."
 }
 
+variable "location" {
+  type        = string
+  default     = "eastus"
+  description = "The Azure location where the resources will be deployed."
+}
+
 variable "hostpooltype" {
   type        = string
   default     = "Pooled"
