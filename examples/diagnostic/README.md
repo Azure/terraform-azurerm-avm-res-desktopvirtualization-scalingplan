@@ -60,6 +60,14 @@ Type: `string`
 
 Default: `"Pooled"`
 
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: The Azure location where the resources will be deployed.
+
+Type: `string`
+
+Default: `"eastus"`
+
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: The resource group where the AVD Host Pool is deployed.
