@@ -12,13 +12,6 @@ provider "azurerm" {
   features {}
 }
 
-# This ensures we have unique CAF compliant names for our resources.
-module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "0.3.0"
-}
-
-
 data "azurerm_virtual_desktop_host_pool" "name" {
   name                = var.host_pool
   resource_group_name = var.resource_group_name

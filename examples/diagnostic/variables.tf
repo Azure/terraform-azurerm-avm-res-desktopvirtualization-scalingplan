@@ -33,7 +33,8 @@ variable "hostpooltype" {
 }
 
 variable "storage_account_id" {
-  type        = string
-  default     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avm-test/providers/Microsoft.Storage/storageAccounts/avmtestdiag"
+  type = string
+  //default     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avm-test/providers/Microsoft.Storage/storageAccounts/avmtestdiag"
+  default     = "/subscriptions/b0aeeba8-4430-4cf1-acbc-6e24cadf86c9/resourceGroups/cloud-shell-storage-eastus/providers/Microsoft.Storage/storageAccounts/cs2100320014c716207"
   description = "The ID of the storage account to send diagnostic logs. The storage account must already exist."
 }

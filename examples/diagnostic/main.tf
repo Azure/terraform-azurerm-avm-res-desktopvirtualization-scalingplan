@@ -12,13 +12,7 @@ provider "azurerm" {
   features {}
 }
 
-# This ensures we have unique CAF compliant names for our resources.
-module "naming" {
-  source  = "Azure/naming/azurerm"
-  version = "0.3.0"
-}
-
-
+# This is the data source to get the host pool name
 data "azurerm_virtual_desktop_host_pool" "name" {
   name                = var.host_pool
   resource_group_name = var.resource_group_name
@@ -35,8 +29,8 @@ module "scplan" {
   hostpooltype        = var.hostpooltype
   diagnostic_settings = {
     to_law = {
-      name               = "to-storage-account"
-      storage_account_id = var.storage_account_id
+      name                        = "to-storage-account"
+      storage_account_resource_id = var.storage_account_id
     }
   }
 }
