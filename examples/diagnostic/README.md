@@ -127,7 +127,7 @@ Description: The name of the AVD Scaling Plan.
 
 Type: `string`
 
-Default: `"avdscalingplan"`
+Default: `"avdsdiagcalingplan"`
 
 ## Outputs
 
