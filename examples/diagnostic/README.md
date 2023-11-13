@@ -22,6 +22,7 @@ The following providers are used by this module:
 
 The following resources are used by this module:
 
+- [azurerm_storage_account.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) (resource)
 - [azurerm_virtual_desktop_host_pool.name](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
 
 <!-- markdownlint-disable MD013 -->
@@ -75,14 +76,6 @@ Type: `string`
 
 Default: `"avdscalingplan"`
 
-### <a name="input_storage_account_id"></a> [storage\_account\_id](#input\_storage\_account\_id)
-
-Description: The ID of the storage account to send diagnostic logs. The storage account must already exist.
-
-Type: `string`
-
-Default: `"/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avm-test/providers/Microsoft.Storage/storageAccounts/avmtestdiag"`
-
 ## Outputs
 
 No outputs.
@@ -90,6 +83,12 @@ No outputs.
 ## Modules
 
 The following Modules are called:
+
+### <a name="module_naming"></a> [naming](#module\_naming)
+
+Source: Azure/naming/azurerm
+
+Version: 0.3.0
 
 ### <a name="module_scplan"></a> [scplan](#module\_scplan)
 
