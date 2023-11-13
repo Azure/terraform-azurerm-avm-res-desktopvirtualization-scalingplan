@@ -48,7 +48,7 @@ The following input variables are required:
 
 ### <a name="input_hostpool"></a> [hostpool](#input\_hostpool)
 
-Description: The name of the AVD Host Pool to assign the application group to.
+Description: The name of the AVD Host Pool to assign the scaling plan to.
 
 Type: `string`
 
@@ -246,7 +246,7 @@ Default:
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: Map of tags to assign to the Key Vault resource.
+Description: Map of tags to assign to the Scaling Plan resource.
 
 Type: `map(any)`
 

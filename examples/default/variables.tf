@@ -17,7 +17,7 @@ variable "scalingplan" {
 variable "host_pool" {
   type        = string
   default     = "avdhostpool"
-  description = "The name of the AVD Host Pool to assign the application group to."
+  description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
 variable "resource_group_name" {

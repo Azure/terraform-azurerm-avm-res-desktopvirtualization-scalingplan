@@ -45,7 +45,7 @@ Default: `true`
 
 ### <a name="input_host_pool"></a> [host\_pool](#input\_host\_pool)
 
-Description: The name of the AVD Host Pool to assign the application group to.
+Description: The name of the AVD Host Pool to assign the scaling plan to.
 
 Type: `string`
 

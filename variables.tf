@@ -115,7 +115,7 @@ DESCRIPTION
 
 variable "hostpool" {
   type        = string
-  description = "The name of the AVD Host Pool to assign the application group to."
+  description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
 variable "hostpooltype" {
@@ -125,7 +125,7 @@ variable "hostpooltype" {
 
 variable "tags" {
   type        = map(any)
-  description = "Map of tags to assign to the Key Vault resource."
+  description = "Map of tags to assign to the Scaling Plan resource."
   default     = null
 }
 
