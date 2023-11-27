@@ -19,70 +19,51 @@ variable "location" {
   description = "The Azure location where the resources will be deployed."
 }
 
-variable "scalingplan" {
+variable "name" {
   type        = string
   description = "The name of the AVD Application Group."
   validation {
-    condition     = can(regex("^[a-z0-9-]{3,24}$", var.scalingplan))
+    condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
   }
+}
+
+variable "description" {
+  type        = string
+  description = "The description of the AVD Scaling Plan."
 }
 
 variable "time_zone" {
   type        = string
   description = "The time zone of the AVD Scaling Plan."
-  default     = "Eastern Standard Time"
 }
 
-variable "schedules" {
-  type = map(object({
+variable "schedule" {
+  type = list(object({
     name                                 = string
-    days_of_week                         = set(string)
-    off_peak_start_time                  = string
-    off_peak_load_balancing_algorithm    = string
-    ramp_down_capacity_threshold_percent = number
-    ramp_down_force_logoff_users         = bool
-    ramp_down_load_balancing_algorithm   = string
-    ramp_down_minimum_hosts_percent      = number
-    ramp_down_notification_message       = string
-    ramp_down_start_time                 = string
-    ramp_down_stop_hosts_when            = string
-    ramp_down_wait_time_minutes          = number
+    days_of_week                         = list(string)
+    ramp_up_start_time                   = string
+    ramp_up_load_balancing_algorithm     = string
+    ramp_up_minimum_hosts_percent        = number
+    ramp_up_capacity_threshold_percent   = number
     peak_start_time                      = string
     peak_load_balancing_algorithm        = string
-    ramp_up_capacity_threshold_percent   = optional(number)
-    ramp_up_load_balancing_algorithm     = string
-    ramp_up_minimum_hosts_percent        = optional(number)
-    ramp_up_start_time                   = string
+    ramp_down_start_time                 = string
+    ramp_down_load_balancing_algorithm   = string
+    ramp_down_minimum_hosts_percent      = number
+    ramp_down_force_logoff_users         = bool
+    ramp_down_wait_time_minutes          = number
+    ramp_down_notification_message       = string
+    ramp_down_capacity_threshold_percent = number
+    ramp_down_stop_hosts_when            = string
+    off_peak_start_time                  = string
+    off_peak_load_balancing_algorithm    = string
   }))
-  default = {
-    schedule1 = {
-      name                                 = "Weekdays"
-      days_of_week                         = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]
-      ramp_up_start_time                   = "05:00"
-      ramp_up_load_balancing_algorithm     = "BreadthFirst"
-      ramp_up_minimum_hosts_percent        = 20
-      ramp_up_capacity_threshold_percent   = 10
-      peak_start_time                      = "09:00"
-      peak_load_balancing_algorithm        = "BreadthFirst"
-      ramp_down_start_time                 = "19:00"
-      ramp_down_load_balancing_algorithm   = "DepthFirst"
-      ramp_down_minimum_hosts_percent      = 10
-      ramp_down_force_logoff_users         = false
-      ramp_down_wait_time_minutes          = 45
-      ramp_down_notification_message       = "Please log off in the next 45 minutes..."
-      ramp_down_capacity_threshold_percent = 5
-      ramp_down_stop_hosts_when            = "ZeroSessions"
-      off_peak_start_time                  = "22:00"
-      off_peak_load_balancing_algorithm    = "DepthFirst"
-    }
-  }
-  nullable = false
 
   validation {
     condition = alltrue(
       [
-        for _, v in var.schedules :
+        for _, v in var.schedule :
         v.days_of_week != null || v.off_peak_start_time != null || v.off_peak_load_balancing_algorithm != null || v.ramp_down_capacity_threshold_percent != null || v.ramp_down_force_logoff_users != null || v.ramp_down_load_balancing_algorithm != null || v.ramp_down_minimum_hosts_percent != null || v.ramp_down_notification_message != null || v.ramp_down_start_time != null || v.ramp_down_stop_hosts_when != null || v.ramp_down_wait_time_minutes != null || v.ramp_up_capacity_threshold_percent != null || v.ramp_up_load_balancing_algorithm != null || v.ramp_up_minimum_hosts_percent != null || v.ramp_up_start_time != null
       ]
     )
