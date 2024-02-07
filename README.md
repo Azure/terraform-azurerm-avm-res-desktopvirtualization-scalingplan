@@ -59,7 +59,9 @@ Type: `string`
 
 ### <a name="input_name"></a> [name](#input\_name)
 
+
 Description: The name of the AVD Scaling Plan.
+
 
 Type: `string`
 
@@ -72,7 +74,6 @@ Type: `string`
 ### <a name="input_schedule"></a> [schedule](#input\_schedule)
 
 Description: A map of schedules to create on AVD Scaling Plan. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-
 - `name` -  The name of the schedule.
 - `days_of_week` -  The days of the week to apply the schedule to.
 - `off_peak_start_time` -  The start time of the off peak period.
