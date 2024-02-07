@@ -21,7 +21,7 @@ variable "location" {
 
 variable "name" {
   type        = string
-  description = "The name of the AVD Application Group."
+  description = "The name of the AVD Scaling Plan."
   validation {
     condition     = can(regex("^[a-z0-9-]{3,24}$", var.name))
     error_message = "The name must be between 3 and 24 characters long and can only contain lowercase letters, numbers and dashes."
