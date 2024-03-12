@@ -5,11 +5,11 @@ This deploys the module in its simplest form.
 
 ```hcl
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.6.6, < 2.0.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0.0"
+      version = ">= 3.71.0, < 4.0.0"
     }
   }
 }
@@ -17,6 +17,7 @@ terraform {
 provider "azurerm" {
   features {}
 }
+
 
 data "azurerm_virtual_desktop_host_pool" "name" {
   name                = var.host_pool
@@ -85,15 +86,15 @@ module "scplan" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0, < 4.0.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71.0, < 4.0.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0, < 4.0.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.71.0, < 4.0.0)
 
 ## Resources
 
