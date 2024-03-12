@@ -8,21 +8,19 @@ Module to deploy Azure Virtual Desktop Scaling Plan in Azure.
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.6.0)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71.0, < 4.0.0)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.0)
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.6.0, <4.0.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azuread"></a> [azuread](#provider\_azuread)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.71.0, < 4.0.0)
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.71.0)
-
-- <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.0)
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.6.0, <4.0.0)
 
 ## Resources
 
@@ -34,11 +32,6 @@ The following resources are used by this module:
 - [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_virtual_desktop_scaling_plan.scplan](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/virtual_desktop_scaling_plan) (resource)
 - [random_id.telem](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/id) (resource)
-- [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) (data source)
-- [azurerm_client_config.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/client_config) (data source)
-- [azurerm_role_definition.power_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
-- [azurerm_role_definition.role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
-- [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) (data source)
 - [azurerm_virtual_desktop_host_pool.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
 
 <!-- markdownlint-disable MD013 -->
@@ -46,15 +39,15 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_hostpool"></a> [hostpool](#input\_hostpool)
+### <a name="input_description"></a> [description](#input\_description)
 
-Description: The name of the AVD Host Pool to assign the scaling plan to.
+Description: The description of the AVD Scaling Plan.
 
 Type: `string`
 
-### <a name="input_hostpooltype"></a> [hostpooltype](#input\_hostpooltype)
+### <a name="input_hostpool"></a> [hostpool](#input\_hostpool)
 
-Description: The type of the AVD Host Pool to assign the scaling plan.
+Description: The name of the AVD Host Pool to assign the scaling plan to.
 
 Type: `string`
 
@@ -64,15 +57,70 @@ Description: The Azure location where the resources will be deployed.
 
 Type: `string`
 
+### <a name="input_name"></a> [name](#input\_name)
+
+
+Description: The name of the AVD Scaling Plan.
+
+
+Type: `string`
+
 ### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
 
 Description: The resource group where the resources will be deployed.
 
 Type: `string`
 
-### <a name="input_scalingplan"></a> [scalingplan](#input\_scalingplan)
+### <a name="input_schedule"></a> [schedule](#input\_schedule)
 
-Description: The name of the AVD Application Group.
+Description: A map of schedules to create on AVD Scaling Plan. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
+- `name` -  The name of the schedule.
+- `days_of_week` -  The days of the week to apply the schedule to.
+- `off_peak_start_time` -  The start time of the off peak period.
+- `off_peak_load_balancing_algorithm` -  The load balancing algorithm to use during the off peak period.
+- `ramp_down_capacity_threshold_percent` -  The capacity threshold percentage to use during the ramp down period.
+- `ramp_down_force_logoff_users` -  Whether to force log off users during the ramp down period.
+- `ramp_down_load_balancing_algorithm` -  The load balancing algorithm to use during the ramp down period.
+- `ramp_down_minimum_hosts_percent` -  The minimum hosts percentage to use during the ramp down period.
+- `ramp_down_notification_message` -  The notification message to use during the ramp down period.
+- `ramp_down_start_time` -  The start time of the ramp down period.
+- `ramp_down_stop_hosts_when` -  When to stop hosts during the ramp down period.
+- `ramp_down_wait_time_minutes` -  The wait time in minutes to use during the ramp down period.
+- `peak_start_time` -  The start time of the peak period.
+- `peak_load_balancing_algorithm` -  The load balancing algorithm to use during the peak period.
+- `ramp_up_capacity_threshold_percent` - (Optional) The capacity threshold percentage to use during the ramp up period.
+- `ramp_up_load_balancing_algorithm` -  The load balancing algorithm to use during the ramp up period.
+- `ramp_up_minimum_hosts_percent` - (Optional) The minimum hosts percentage to use during the ramp up period.
+- `ramp_up_start_time` -  The start time of the ramp up period.
+
+Type:
+
+```hcl
+list(object({
+    name                                 = string
+    days_of_week                         = list(string)
+    ramp_up_start_time                   = string
+    ramp_up_load_balancing_algorithm     = string
+    ramp_up_minimum_hosts_percent        = number
+    ramp_up_capacity_threshold_percent   = number
+    peak_start_time                      = string
+    peak_load_balancing_algorithm        = string
+    ramp_down_start_time                 = string
+    ramp_down_load_balancing_algorithm   = string
+    ramp_down_minimum_hosts_percent      = number
+    ramp_down_force_logoff_users         = bool
+    ramp_down_wait_time_minutes          = number
+    ramp_down_notification_message       = string
+    ramp_down_capacity_threshold_percent = number
+    ramp_down_stop_hosts_when            = string
+    off_peak_start_time                  = string
+    off_peak_load_balancing_algorithm    = string
+  }))
+```
+
+### <a name="input_time_zone"></a> [time\_zone](#input\_time\_zone)
+
+Description: The time zone of the AVD Scaling Plan.
 
 Type: `string`
 
@@ -163,87 +211,6 @@ map(object({
 
 Default: `{}`
 
-### <a name="input_schedules"></a> [schedules](#input\_schedules)
-
-Description: A map of schedules to create on AVD Scaling Plan. The map key is deliberately arbitrary to avoid issues where map keys maybe unknown at plan time.
-
-- `name` -  The name of the schedule.
-- `days_of_week` -  The days of the week to apply the schedule to.
-- `off_peak_start_time` -  The start time of the off peak period.
-- `off_peak_load_balancing_algorithm` -  The load balancing algorithm to use during the off peak period.
-- `ramp_down_capacity_threshold_percent` -  The capacity threshold percentage to use during the ramp down period.
-- `ramp_down_force_logoff_users` -  Whether to force log off users during the ramp down period.
-- `ramp_down_load_balancing_algorithm` -  The load balancing algorithm to use during the ramp down period.
-- `ramp_down_minimum_hosts_percent` -  The minimum hosts percentage to use during the ramp down period.
-- `ramp_down_notification_message` -  The notification message to use during the ramp down period.
-- `ramp_down_start_time` -  The start time of the ramp down period.
-- `ramp_down_stop_hosts_when` -  When to stop hosts during the ramp down period.
-- `ramp_down_wait_time_minutes` -  The wait time in minutes to use during the ramp down period.
-- `peak_start_time` -  The start time of the peak period.
-- `peak_load_balancing_algorithm` -  The load balancing algorithm to use during the peak period.
-- `ramp_up_capacity_threshold_percent` - (Optional) The capacity threshold percentage to use during the ramp up period.
-- `ramp_up_load_balancing_algorithm` -  The load balancing algorithm to use during the ramp up period.
-- `ramp_up_minimum_hosts_percent` - (Optional) The minimum hosts percentage to use during the ramp up period.
-- `ramp_up_start_time` -  The start time of the ramp up period.
-
-Type:
-
-```hcl
-map(object({
-    name                                 = string
-    days_of_week                         = set(string)
-    off_peak_start_time                  = string
-    off_peak_load_balancing_algorithm    = string
-    ramp_down_capacity_threshold_percent = number
-    ramp_down_force_logoff_users         = bool
-    ramp_down_load_balancing_algorithm   = string
-    ramp_down_minimum_hosts_percent      = number
-    ramp_down_notification_message       = string
-    ramp_down_start_time                 = string
-    ramp_down_stop_hosts_when            = string
-    ramp_down_wait_time_minutes          = number
-    peak_start_time                      = string
-    peak_load_balancing_algorithm        = string
-    ramp_up_capacity_threshold_percent   = optional(number)
-    ramp_up_load_balancing_algorithm     = string
-    ramp_up_minimum_hosts_percent        = optional(number)
-    ramp_up_start_time                   = string
-  }))
-```
-
-Default:
-
-```json
-{
-  "schedule1": {
-    "days_of_week": [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday"
-    ],
-    "name": "Weekdays",
-    "off_peak_load_balancing_algorithm": "DepthFirst",
-    "off_peak_start_time": "22:00",
-    "peak_load_balancing_algorithm": "BreadthFirst",
-    "peak_start_time": "09:00",
-    "ramp_down_capacity_threshold_percent": 5,
-    "ramp_down_force_logoff_users": false,
-    "ramp_down_load_balancing_algorithm": "DepthFirst",
-    "ramp_down_minimum_hosts_percent": 10,
-    "ramp_down_notification_message": "Please log off in the next 45 minutes...",
-    "ramp_down_start_time": "19:00",
-    "ramp_down_stop_hosts_when": "ZeroSessions",
-    "ramp_down_wait_time_minutes": 45,
-    "ramp_up_capacity_threshold_percent": 10,
-    "ramp_up_load_balancing_algorithm": "BreadthFirst",
-    "ramp_up_minimum_hosts_percent": 20,
-    "ramp_up_start_time": "05:00"
-  }
-}
-```
-
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
 Description: Map of tags to assign to the Scaling Plan resource.
@@ -251,14 +218,6 @@ Description: Map of tags to assign to the Scaling Plan resource.
 Type: `map(any)`
 
 Default: `null`
-
-### <a name="input_time_zone"></a> [time\_zone](#input\_time\_zone)
-
-Description: The time zone of the AVD Scaling Plan.
-
-Type: `string`
-
-Default: `"Eastern Standard Time"`
 
 ### <a name="input_tracing_tags_enabled"></a> [tracing\_tags\_enabled](#input\_tracing\_tags\_enabled)
 

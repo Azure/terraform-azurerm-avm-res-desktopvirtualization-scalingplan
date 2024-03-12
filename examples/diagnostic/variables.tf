@@ -8,15 +8,28 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "scalingplan" {
+variable "name" {
   type        = string
-  default     = "avdscalingplan"
+  default     = "avdsdiagcalingplan"
   description = "The name of the AVD Scaling Plan."
 }
 
+variable "description" {
+  type        = string
+  default     = "AVD Scaling Plan"
+  description = "The description of the AVD Scaling Plan."
+}
+
+variable "time_zone" {
+  type        = string
+  description = "The time zone of the AVD Scaling Plan."
+  default     = "Eastern Standard Time"
+}
+
+
 variable "host_pool" {
   type        = string
-  default     = "avdhostpool"
+  default     = "avdhostpool1"
   description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
@@ -26,14 +39,8 @@ variable "resource_group_name" {
   description = "The resource group where the AVD Host Pool is deployed."
 }
 
-variable "hostpooltype" {
+variable "location" {
   type        = string
-  default     = "Pooled"
-  description = "The type of the AVD Host Pool to assign the scaling plan."
-}
-
-variable "storage_account_id" {
-  type        = string
-  default     = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-avm-test/providers/Microsoft.Storage/storageAccounts/avmtestdiag" //replace with your storage account id
-  description = "The ID of the storage account to send diagnostic logs. The storage account must already exist."
+  default     = "eastus"
+  description = "The Azure location where the resources will be deployed."
 }
