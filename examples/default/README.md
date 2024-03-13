@@ -1,7 +1,7 @@
 <!-- BEGIN_TF_DOCS -->
 # Default example
 
-This deploys the module in its simplest form.
+This deploys the module in its simplest form with supporting hostpool.
 
 ```hcl
 terraform {
@@ -22,22 +22,45 @@ provider "azurerm" {
   features {}
 }
 
+# This ensures we have unique CAF compliant names for our resources.
+module "naming" {
+  source  = "Azure/naming/azurerm"
+  version = "0.3.0"
+}
 
-data "azurerm_virtual_desktop_host_pool" "name" {
-  name                = var.host_pool
-  resource_group_name = var.resource_group_name
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  min = 0
+  max = length(local.azure_regions) - 1
+}
+
+# This is required for resource modules
+resource "azurerm_resource_group" "this" {
+  name     = module.naming.resource_group.name_unique
+  location = local.azure_regions[random_integer.region_index.result]
+}
+
+# This is the module call
+module "hostpool" {
+  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  enable_telemetry    = var.enable_telemetry
+  hostpool            = var.host_pool
+  hostpooltype        = "Pooled"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
 }
 
 # This is the module call
 module "scplan" {
   source              = "../../"
   enable_telemetry    = var.enable_telemetry
-  resource_group_name = data.azurerm_virtual_desktop_host_pool.name.resource_group_name
-  location            = data.azurerm_virtual_desktop_host_pool.name.location
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
   name                = var.name
   time_zone           = var.time_zone
   description         = var.description
-  hostpool            = data.azurerm_virtual_desktop_host_pool.name.name
+  hostpool            = var.host_pool
+  depends_on          = [azurerm_resource_group.this, module.hostpool]
   schedule = toset(
     [
       {
@@ -102,11 +125,14 @@ The following providers are used by this module:
 
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.0)
 
+- <a name="provider_random"></a> [random](#provider\_random) (~> 3.0)
+
 ## Resources
 
 The following resources are used by this module:
 
-- [azurerm_virtual_desktop_host_pool.name](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/virtual_desktop_host_pool) (data source)
+- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -143,6 +169,14 @@ Type: `string`
 
 Default: `"avdhostpool"`
 
+### <a name="input_location"></a> [location](#input\_location)
+
+Description: The location of the AVD Host Pool.
+
+Type: `string`
+
+Default: `"eastus"`
+
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name of the AVD Scaling Plan.
@@ -174,6 +208,18 @@ No outputs.
 ## Modules
 
 The following Modules are called:
+
+### <a name="module_hostpool"></a> [hostpool](#module\_hostpool)
+
+Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
+
+Version:
+
+### <a name="module_naming"></a> [naming](#module\_naming)
+
+Source: Azure/naming/azurerm
+
+Version: 0.3.0
 
 ### <a name="module_scplan"></a> [scplan](#module\_scplan)
 

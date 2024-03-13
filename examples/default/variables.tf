@@ -38,3 +38,10 @@ variable "resource_group_name" {
   default     = "rg-avm-test"
   description = "The resource group where the AVD Host Pool is deployed."
 }
+
+variable "location" {
+  type        = string
+  default     = "eastus"
+  description = "The location of the AVD Host Pool."
+
+}
