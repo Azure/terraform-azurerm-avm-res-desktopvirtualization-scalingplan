@@ -64,7 +64,6 @@ resource "azurerm_storage_account" "this" {
 # This is the module call
 module "scplan" {
   source              = "../../"
-  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
@@ -228,7 +227,7 @@ Version: 0.3.0
 
 Source: ../../
 
-Version: 0.1.2
+Version:
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection

@@ -58,7 +58,6 @@ resource "azurerm_storage_account" "this" {
 # This is the module call
 module "scplan" {
   source              = "../../"
-  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
