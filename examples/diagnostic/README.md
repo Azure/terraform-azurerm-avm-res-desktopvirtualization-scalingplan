@@ -52,7 +52,7 @@ module "hostpool" {
   location            = azurerm_resource_group.this.location
 }
 
-// This is the storage account for the diagnostic settings
+# This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
   name                     = module.naming.storage_account.name_unique
   resource_group_name      = azurerm_resource_group.this.name
