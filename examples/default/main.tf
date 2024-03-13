@@ -47,16 +47,21 @@ module "hostpool" {
 
 # This is the module call
 module "scplan" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  name                = var.name
-  time_zone           = var.time_zone
-  description         = var.description
-  hostpool            = var.host_pool
-  depends_on          = [azurerm_resource_group.this, module.hostpool]
-  schedule = toset(
+  source                                           = "../../"
+  enable_telemetry                                 = var.enable_telemetry
+  virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
+  virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_scaling_plan_time_zone           = var.virtual_desktop_scaling_plan_time_zone
+  virtual_desktop_scaling_plan_name                = var.virtual_desktop_scaling_plan_name
+  virtual_desktop_scaling_plan_host_pool = toset(
+    [
+      {
+        hostpool_id          = module.hostpool.azure_virtual_desktop_host_pool_id
+        scaling_plan_enabled = true
+      }
+    ]
+  )
+  virtual_desktop_scaling_plan_schedule = toset(
     [
       {
         name                                 = "Weekday"
@@ -100,4 +105,5 @@ module "scplan" {
       }
     ]
   )
+  depends_on = [azurerm_resource_group.this, module.hostpool]
 }

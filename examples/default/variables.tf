@@ -8,20 +8,13 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "name" {
+variable "virtual_desktop_scaling_plan_name" {
   type        = string
   default     = "avdscalingplan"
   description = "The name of the AVD Scaling Plan."
 }
 
-variable "description" {
-  type        = string
-  default     = "AVD Scaling Plan"
-  description = "The description of the AVD Scaling Plan."
-
-}
-
-variable "time_zone" {
+variable "virtual_desktop_scaling_plan_time_zone" {
   type        = string
   description = "The time zone of the AVD Scaling Plan."
   default     = "Eastern Standard Time"
