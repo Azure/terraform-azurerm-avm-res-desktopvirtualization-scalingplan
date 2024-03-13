@@ -1,9 +1,13 @@
 terraform {
-  required_version = ">= 1.6.6, < 2.0.0"
+  required_version = "~> 1.6"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.71.0, < 4.0.0"
+      version = "~> 3.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
     }
   }
 }
@@ -34,6 +38,7 @@ resource "azurerm_resource_group" "this" {
 # This is the module call
 module "hostpool" {
   source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   hostpool            = var.host_pool
   hostpooltype        = "Pooled"
@@ -53,6 +58,7 @@ resource "azurerm_storage_account" "this" {
 # This is the module call
 module "scplan" {
   source              = "../../"
+  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location

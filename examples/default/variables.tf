@@ -33,15 +33,3 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
-variable "resource_group_name" {
-  type        = string
-  default     = "rg-avm-test"
-  description = "The resource group where the AVD Host Pool is deployed."
-}
-
-variable "location" {
-  type        = string
-  default     = "eastus"
-  description = "The location of the AVD Host Pool."
-
-}

@@ -37,6 +37,7 @@ resource "azurerm_resource_group" "this" {
 # This is the module call
 module "hostpool" {
   source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   hostpool            = var.host_pool
   hostpooltype        = "Pooled"

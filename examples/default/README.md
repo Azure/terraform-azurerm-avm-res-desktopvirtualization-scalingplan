@@ -43,6 +43,7 @@ resource "azurerm_resource_group" "this" {
 # This is the module call
 module "hostpool" {
   source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   hostpool            = var.host_pool
   hostpooltype        = "Pooled"
@@ -169,14 +170,6 @@ Type: `string`
 
 Default: `"avdhostpool"`
 
-### <a name="input_location"></a> [location](#input\_location)
-
-Description: The location of the AVD Host Pool.
-
-Type: `string`
-
-Default: `"eastus"`
-
 ### <a name="input_name"></a> [name](#input\_name)
 
 Description: The name of the AVD Scaling Plan.
@@ -184,14 +177,6 @@ Description: The name of the AVD Scaling Plan.
 Type: `string`
 
 Default: `"avdscalingplan"`
-
-### <a name="input_resource_group_name"></a> [resource\_group\_name](#input\_resource\_group\_name)
-
-Description: The resource group where the AVD Host Pool is deployed.
-
-Type: `string`
-
-Default: `"rg-avm-test"`
 
 ### <a name="input_time_zone"></a> [time\_zone](#input\_time\_zone)
 
@@ -213,7 +198,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version:
+Version: 0.1.2
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 

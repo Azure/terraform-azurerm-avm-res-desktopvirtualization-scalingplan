@@ -5,11 +5,15 @@ This deploys the module with Diagnostic settings enabled to send logs to a stora
 
 ```hcl
 terraform {
-  required_version = ">= 1.6.6, < 2.0.0"
+  required_version = "~> 1.6"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.71.0, < 4.0.0"
+      version = "~> 3.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = "~> 3.0"
     }
   }
 }
@@ -40,6 +44,7 @@ resource "azurerm_resource_group" "this" {
 # This is the module call
 module "hostpool" {
   source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   hostpool            = var.host_pool
   hostpooltype        = "Pooled"
@@ -59,6 +64,7 @@ resource "azurerm_storage_account" "this" {
 # This is the module call
 module "scplan" {
   source              = "../../"
+  version             = "0.1.2"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
@@ -125,17 +131,19 @@ module "scplan" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.6)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71.0, < 4.0.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.0)
+
+- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.71.0, < 4.0.0)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.0)
 
-- <a name="provider_random"></a> [random](#provider\_random)
+- <a name="provider_random"></a> [random](#provider\_random) (~> 3.0)
 
 ## Resources
 
@@ -208,7 +216,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version:
+Version: 0.1.2
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
@@ -220,7 +228,7 @@ Version: 0.3.0
 
 Source: ../../
 
-Version:
+Version: 0.1.2
 
 <!-- markdownlint-disable-next-line MD041 -->
 ## Data Collection
