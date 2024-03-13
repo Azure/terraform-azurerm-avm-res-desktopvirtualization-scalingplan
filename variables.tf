@@ -99,10 +99,11 @@ variable "hostpool" {
   description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
+# tflint-ignore: terraform_unused_declarations
 variable "tags" {
   type        = map(any)
-  description = "Map of tags to assign to the Scaling Plan resource."
-  default     = null
+  default     = {}
+  description = "The map of tags to be applied to the resource"
 }
 
 # tflint-ignore: terraform_unused_declarations

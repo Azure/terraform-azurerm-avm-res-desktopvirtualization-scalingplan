@@ -212,11 +212,11 @@ Default: `{}`
 
 ### <a name="input_tags"></a> [tags](#input\_tags)
 
-Description: Map of tags to assign to the Scaling Plan resource.
+Description: The map of tags to be applied to the resource
 
 Type: `map(any)`
 
-Default: `null`
+Default: `{}`
 
 ### <a name="input_tracing_tags_enabled"></a> [tracing\_tags\_enabled](#input\_tracing\_tags\_enabled)
 
