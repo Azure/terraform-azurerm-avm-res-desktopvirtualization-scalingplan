@@ -45,6 +45,33 @@ module "hostpool" {
   location            = azurerm_resource_group.this.location
 }
 
+# Get the subscription
+data "azurerm_subscription" "primary" {}
+
+# Get the service principal for Azure Vitual Desktop
+data "azuread_service_principal" "spn" {
+  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
+}
+
+data "azurerm_subscription" "current" {}
+
+resource "random_uuid" "example" {}
+
+data "azurerm_role_definition" "power_role" {
+  name = "Desktop Virtualization Power On Off Contributor"
+}
+
+resource "azurerm_role_assignment" "new" {
+  name                             = random_uuid.example.result
+  scope                            = data.azurerm_subscription.primary.id
+  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
+  principal_id                     = data.azuread_service_principal.spn.object_id
+  skip_service_principal_aad_check = true
+  lifecycle {
+    ignore_changes = all
+  }
+}
+
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
   name                     = module.naming.storage_account.name_unique
