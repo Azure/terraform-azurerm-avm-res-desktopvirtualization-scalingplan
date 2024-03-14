@@ -1,9 +1,13 @@
 terraform {
-  required_version = ">= 1.0.0"
+  required_version = ">= 1.6.6, < 2.0.0"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.7.0, < 4.0.0"
+      version = ">= 3.11.1, < 4.0.0"
+    }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.5.1, < 4.0.0"
     }
   }
 }
@@ -18,32 +22,55 @@ module "naming" {
   version = "0.3.0"
 }
 
-# This is the data source to get the host pool name
-data "azurerm_virtual_desktop_host_pool" "name" {
-  name                = var.host_pool
-  resource_group_name = var.resource_group_name
+# This picks a random region from the list of regions.
+resource "random_integer" "region_index" {
+  min = 0
+  max = length(local.azure_regions) - 1
 }
 
-// This is the storage account for the diagnostic settings
+# This is required for resource modules
+resource "azurerm_resource_group" "this" {
+  name     = module.naming.resource_group.name_unique
+  location = local.azure_regions[random_integer.region_index.result]
+}
+
+# This is the module call
+module "hostpool" {
+  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version             = "0.1.2"
+  enable_telemetry    = var.enable_telemetry
+  hostpool            = var.host_pool
+  hostpooltype        = "Pooled"
+  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.this.location
+}
+
+# This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
   name                     = module.naming.storage_account.name_unique
-  resource_group_name      = var.resource_group_name
-  location                 = var.location
+  resource_group_name      = azurerm_resource_group.this.name
+  location                 = azurerm_resource_group.this.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
 # This is the module call
 module "scplan" {
-  source              = "../../"
-  enable_telemetry    = var.enable_telemetry
-  resource_group_name = data.azurerm_virtual_desktop_host_pool.name.resource_group_name
-  location            = data.azurerm_virtual_desktop_host_pool.name.location
-  name                = var.name
-  time_zone           = var.time_zone
-  description         = var.description
-  hostpool            = data.azurerm_virtual_desktop_host_pool.name.name
-  schedule = toset(
+  source                                           = "../../"
+  enable_telemetry                                 = var.enable_telemetry
+  virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
+  virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_scaling_plan_time_zone           = var.virtual_desktop_scaling_plan_time_zone
+  virtual_desktop_scaling_plan_name                = var.virtual_desktop_scaling_plan_name
+  virtual_desktop_scaling_plan_host_pool = toset(
+    [
+      {
+        hostpool_id          = module.hostpool.azure_virtual_desktop_host_pool_id
+        scaling_plan_enabled = true
+      }
+    ]
+  )
+  virtual_desktop_scaling_plan_schedule = toset(
     [
       {
         name                                 = "Weekday"
@@ -87,6 +114,7 @@ module "scplan" {
       }
     ]
   )
+  depends_on = [azurerm_resource_group.this, module.hostpool]
   diagnostic_settings = {
     to_law = {
       name                        = "to-storage-account"

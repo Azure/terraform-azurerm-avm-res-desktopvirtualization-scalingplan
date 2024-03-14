@@ -8,20 +8,13 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "name" {
+variable "virtual_desktop_scaling_plan_name" {
   type        = string
   default     = "avdscalingplan"
   description = "The name of the AVD Scaling Plan."
 }
 
-variable "description" {
-  type        = string
-  default     = "AVD Scaling Plan"
-  description = "The description of the AVD Scaling Plan."
-
-}
-
-variable "time_zone" {
+variable "virtual_desktop_scaling_plan_time_zone" {
   type        = string
   description = "The time zone of the AVD Scaling Plan."
   default     = "Eastern Standard Time"
@@ -33,8 +26,3 @@ variable "host_pool" {
   description = "The name of the AVD Host Pool to assign the scaling plan to."
 }
 
-variable "resource_group_name" {
-  type        = string
-  default     = "rg-avm-test"
-  description = "The resource group where the AVD Host Pool is deployed."
-}

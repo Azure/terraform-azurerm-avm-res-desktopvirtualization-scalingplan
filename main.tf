@@ -1,51 +1,58 @@
-# Get the Azure Virtual Desktop host pool
-data "azurerm_virtual_desktop_host_pool" "this" {
-  name                = var.hostpool
-  resource_group_name = var.resource_group_name
-}
-
-# autoscale settings scenario 1 https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
-resource "azurerm_virtual_desktop_scaling_plan" "scplan" {
-  name                = var.name
-  location            = var.location
-  resource_group_name = var.resource_group_name
-  friendly_name       = var.name
-  description         = var.description
-  time_zone           = var.time_zone
-  tags                = var.tags
+# autoscale settings https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
+resource "azurerm_virtual_desktop_scaling_plan" "this" {
+  location            = var.virtual_desktop_scaling_plan_location
+  name                = var.virtual_desktop_scaling_plan_name
+  resource_group_name = var.virtual_desktop_scaling_plan_resource_group_name
+  time_zone           = var.virtual_desktop_scaling_plan_time_zone
+  description         = var.virtual_desktop_scaling_plan_description
+  exclusion_tag       = var.virtual_desktop_scaling_plan_exclusion_tag
+  friendly_name       = var.virtual_desktop_scaling_plan_friendly_name
+  tags                = var.virtual_desktop_scaling_plan_tags
 
   dynamic "schedule" {
-    for_each = var.schedule
+    for_each = var.virtual_desktop_scaling_plan_schedule
     content {
-      name                                 = schedule.value.name
       days_of_week                         = schedule.value.days_of_week
-      ramp_up_start_time                   = schedule.value.ramp_up_start_time
-      ramp_up_load_balancing_algorithm     = schedule.value.ramp_up_load_balancing_algorithm
-      ramp_up_minimum_hosts_percent        = schedule.value.ramp_up_minimum_hosts_percent
-      ramp_up_capacity_threshold_percent   = schedule.value.ramp_up_capacity_threshold_percent
-      peak_start_time                      = schedule.value.peak_start_time
+      name                                 = schedule.value.name
+      off_peak_load_balancing_algorithm    = schedule.value.off_peak_load_balancing_algorithm
+      off_peak_start_time                  = schedule.value.off_peak_start_time
       peak_load_balancing_algorithm        = schedule.value.peak_load_balancing_algorithm
-      ramp_down_start_time                 = schedule.value.ramp_down_start_time
+      peak_start_time                      = schedule.value.peak_start_time
+      ramp_down_capacity_threshold_percent = schedule.value.ramp_down_capacity_threshold_percent
+      ramp_down_force_logoff_users         = schedule.value.ramp_down_force_logoff_users
       ramp_down_load_balancing_algorithm   = schedule.value.ramp_down_load_balancing_algorithm
       ramp_down_minimum_hosts_percent      = schedule.value.ramp_down_minimum_hosts_percent
-      ramp_down_force_logoff_users         = schedule.value.ramp_down_force_logoff_users
-      ramp_down_wait_time_minutes          = schedule.value.ramp_down_wait_time_minutes
       ramp_down_notification_message       = schedule.value.ramp_down_notification_message
-      ramp_down_capacity_threshold_percent = schedule.value.ramp_down_capacity_threshold_percent
+      ramp_down_start_time                 = schedule.value.ramp_down_start_time
       ramp_down_stop_hosts_when            = schedule.value.ramp_down_stop_hosts_when
-      off_peak_start_time                  = schedule.value.off_peak_start_time
-      off_peak_load_balancing_algorithm    = schedule.value.off_peak_load_balancing_algorithm
+      ramp_down_wait_time_minutes          = schedule.value.ramp_down_wait_time_minutes
+      ramp_up_load_balancing_algorithm     = schedule.value.ramp_up_load_balancing_algorithm
+      ramp_up_start_time                   = schedule.value.ramp_up_start_time
+      ramp_up_capacity_threshold_percent   = schedule.value.ramp_up_capacity_threshold_percent
+      ramp_up_minimum_hosts_percent        = schedule.value.ramp_up_minimum_hosts_percent
     }
   }
-  host_pool {
-    hostpool_id          = data.azurerm_virtual_desktop_host_pool.this.id
-    scaling_plan_enabled = true
+  dynamic "host_pool" {
+    for_each = var.virtual_desktop_scaling_plan_host_pool == null ? [] : var.virtual_desktop_scaling_plan_host_pool
+    content {
+      hostpool_id          = host_pool.value.hostpool_id
+      scaling_plan_enabled = host_pool.value.scaling_plan_enabled
+    }
+  }
+  dynamic "timeouts" {
+    for_each = var.virtual_desktop_scaling_plan_timeouts == null ? [] : [var.virtual_desktop_scaling_plan_timeouts]
+    content {
+      create = timeouts.value.create
+      delete = timeouts.value.delete
+      read   = timeouts.value.read
+      update = timeouts.value.update
+    }
   }
 }
 
 resource "azurerm_role_assignment" "this" {
   for_each                               = var.role_assignments
-  scope                                  = azurerm_virtual_desktop_scaling_plan.scplan.id
+  scope                                  = azurerm_virtual_desktop_scaling_plan.this.id
   role_definition_id                     = strcontains(lower(each.value.role_definition_id_or_name), lower(local.role_definition_resource_substring)) ? each.value.role_definition_id_or_name : null
   role_definition_name                   = strcontains(lower(each.value.role_definition_id_or_name), lower(local.role_definition_resource_substring)) ? null : each.value.role_definition_id_or_name
   principal_id                           = each.value.principal_id
@@ -57,17 +64,16 @@ resource "azurerm_role_assignment" "this" {
 
 resource "azurerm_management_lock" "this" {
   count      = var.lock.kind != "None" ? 1 : 0
-  name       = coalesce(var.lock.name, "lock-${var.name}")
-  scope      = azurerm_virtual_desktop_scaling_plan.scplan.id
+  name       = coalesce(var.lock.name, "lock-${var.virtual_desktop_scaling_plan_name}")
+  scope      = azurerm_virtual_desktop_scaling_plan.this.id
   lock_level = var.lock.kind
 }
-
 
 # Create Diagnostic Settings for AVD application group
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each                       = var.diagnostic_settings
-  name                           = each.value.name != null ? each.value.name : "diag-${var.name}"
-  target_resource_id             = azurerm_virtual_desktop_scaling_plan.scplan.id
+  name                           = each.value.name != null ? each.value.name : "diag-${var.virtual_desktop_scaling_plan_name}"
+  target_resource_id             = azurerm_virtual_desktop_scaling_plan.this.id
   storage_account_id             = each.value.storage_account_resource_id
   eventhub_authorization_rule_id = each.value.event_hub_authorization_rule_resource_id
   eventhub_name                  = each.value.event_hub_name
