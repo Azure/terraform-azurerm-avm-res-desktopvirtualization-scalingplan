@@ -5,15 +5,19 @@ This deploys the module with Diagnostic settings enabled to send logs to a stora
 
 ```hcl
 terraform {
-  required_version = "~> 1.6"
+  required_version = ">= 1.6"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = ">= 3.7.0. < 4.0.0"
+    }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = ">= 2.0.0. < 3.0.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.0"
+      version = ">= 3.5.0. < 4.0.0"
     }
   }
 }
@@ -49,33 +53,6 @@ module "hostpool" {
   hostpooltype        = "Pooled"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
-}
-
-# Get the subscription
-data "azurerm_subscription" "primary" {}
-
-# Get the service principal for Azure Vitual Desktop
-data "azuread_service_principal" "spn" {
-  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
-}
-
-data "azurerm_subscription" "current" {}
-
-resource "random_uuid" "example" {}
-
-data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
-}
-
-resource "azurerm_role_assignment" "new" {
-  name                             = random_uuid.example.result
-  scope                            = data.azurerm_subscription.primary.id
-  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
-  principal_id                     = data.azuread_service_principal.spn.object_id
-  skip_service_principal_aad_check = true
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
 # This is the storage account for the diagnostic settings
@@ -162,35 +139,29 @@ module "scplan" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (~> 1.6)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (~> 3.0)
+- <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.0.0. < 3.0.0)
 
-- <a name="requirement_random"></a> [random](#requirement\_random) (~> 3.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.7.0. < 4.0.0)
+
+- <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.5.0. < 4.0.0)
 
 ## Providers
 
 The following providers are used by this module:
 
-- <a name="provider_azuread"></a> [azuread](#provider\_azuread)
+- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.7.0. < 4.0.0)
 
-- <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (~> 3.0)
-
-- <a name="provider_random"></a> [random](#provider\_random) (~> 3.0)
+- <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.0. < 4.0.0)
 
 ## Resources
 
 The following resources are used by this module:
 
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_role_assignment.new](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_storage_account.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) (resource)
 - [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
-- [random_uuid.example](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
-- [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) (data source)
-- [azurerm_role_definition.power_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
-- [azurerm_subscription.current](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) (data source)
-- [azurerm_subscription.primary](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

@@ -1,13 +1,17 @@
 terraform {
-  required_version = "~> 1.6"
+  required_version = ">= 1.6"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = ">= 3.7.0. < 4.0.0"
+    }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = ">= 2.0.0. < 3.0.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.0"
+      version = ">= 3.5.0. < 4.0.0"
     }
   }
 }
@@ -43,33 +47,6 @@ module "hostpool" {
   hostpooltype        = "Pooled"
   resource_group_name = azurerm_resource_group.this.name
   location            = azurerm_resource_group.this.location
-}
-
-# Get the subscription
-data "azurerm_subscription" "primary" {}
-
-# Get the service principal for Azure Vitual Desktop
-data "azuread_service_principal" "spn" {
-  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
-}
-
-data "azurerm_subscription" "current" {}
-
-resource "random_uuid" "example" {}
-
-data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
-}
-
-resource "azurerm_role_assignment" "new" {
-  name                             = random_uuid.example.result
-  scope                            = data.azurerm_subscription.primary.id
-  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
-  principal_id                     = data.azuread_service_principal.spn.object_id
-  skip_service_principal_aad_check = true
-  lifecycle {
-    ignore_changes = all
-  }
 }
 
 # This is the storage account for the diagnostic settings

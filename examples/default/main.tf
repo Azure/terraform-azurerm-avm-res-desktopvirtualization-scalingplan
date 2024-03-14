@@ -1,13 +1,17 @@
 terraform {
-  required_version = "~> 1.6"
+  required_version = ">= 1.6"
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 3.0"
+      version = ">= 3.7.0. < 4.0.0"
+    }
+    azuread = {
+      source  = "hashicorp/azuread"
+      version = ">= 2.0.0. < 3.0.0"
     }
     random = {
       source  = "hashicorp/random"
-      version = "~> 3.0"
+      version = ">= 3.5.0. < 4.0.0"
     }
   }
 }
@@ -52,8 +56,6 @@ data "azurerm_subscription" "primary" {}
 data "azuread_service_principal" "spn" {
   client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
-
-data "azurerm_subscription" "current" {}
 
 resource "random_uuid" "example" {}
 
