@@ -67,7 +67,7 @@ module "scplan" {
   virtual_desktop_scaling_plan_host_pool = toset(
     [
       {
-        hostpool_id          = module.hostpool.azure_virtual_desktop_host_pool_id
+        hostpool_id          = module.hostpool.resource.id
         scaling_plan_enabled = true
       }
     ]
