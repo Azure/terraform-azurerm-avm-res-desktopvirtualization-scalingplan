@@ -24,34 +24,36 @@ module "naming" {
 
 # This picks a random region from the list of regions.
 resource "random_integer" "region_index" {
-  min = 0
   max = length(local.azure_regions) - 1
+  min = 0
 }
 
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
-  name     = module.naming.resource_group.name_unique
   location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
 }
 
-# This is the module call
 module "hostpool" {
-  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version             = "0.1.2"
-  enable_telemetry    = var.enable_telemetry
-  hostpool            = var.host_pool
-  hostpooltype        = "Pooled"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
+  source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version                                            = "0.1.4"
+  enable_telemetry                                   = var.enable_telemetry
+  resource_group_name                                = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_type                     = "Pooled"
+  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
+  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_name                     = "vdpool-avd-01"
+  virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
+  account_replication_type = "LRS"
+  account_tier             = "Standard"
+  location                 = azurerm_resource_group.this.location
   name                     = module.naming.storage_account.name_unique
   resource_group_name      = azurerm_resource_group.this.name
-  location                 = azurerm_resource_group.this.location
-  account_tier             = "Standard"
-  account_replication_type = "LRS"
 }
 
 # This is the module call

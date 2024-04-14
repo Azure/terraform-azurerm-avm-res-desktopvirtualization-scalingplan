@@ -28,51 +28,29 @@ module "naming" {
 
 # This picks a random region from the list of regions.
 resource "random_integer" "region_index" {
-  min = 0
   max = length(local.azure_regions) - 1
+  min = 0
 }
 
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
-  name     = module.naming.resource_group.name_unique
   location = local.azure_regions[random_integer.region_index.result]
+  name     = module.naming.resource_group.name_unique
 }
 
-# This is the module call
 module "hostpool" {
-  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version             = "0.1.2"
-  enable_telemetry    = var.enable_telemetry
-  hostpool            = var.host_pool
-  hostpooltype        = "Pooled"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
+  source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version                                            = "0.1.4"
+  enable_telemetry                                   = var.enable_telemetry
+  resource_group_name                                = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_type                     = "Pooled"
+  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
+  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_name                     = "vdpool-avd-01"
+  virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
-# Get the subscription
-data "azurerm_subscription" "primary" {}
-
-# Get the service principal for Azure Vitual Desktop
-data "azuread_service_principal" "spn" {
-  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
-}
-
-resource "random_uuid" "example" {}
-
-data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
-}
-
-resource "azurerm_role_assignment" "new" {
-  name                             = random_uuid.example.result
-  scope                            = data.azurerm_subscription.primary.id
-  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
-  principal_id                     = data.azuread_service_principal.spn.object_id
-  skip_service_principal_aad_check = true
-  lifecycle {
-    ignore_changes = all
-  }
-}
 
 # This is the module call
 module "scplan" {
@@ -85,7 +63,7 @@ module "scplan" {
   virtual_desktop_scaling_plan_host_pool = toset(
     [
       {
-        hostpool_id          = module.hostpool.azure_virtual_desktop_host_pool_id
+        hostpool_id          = module.hostpool.resource.id
         scaling_plan_enabled = true
       }
     ]

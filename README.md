@@ -299,13 +299,9 @@ Default: `null`
 
 The following outputs are exported:
 
-### <a name="output_scaling_plan_id"></a> [scaling\_plan\_id](#output\_scaling\_plan\_id)
+### <a name="output_resource"></a> [resource](#output\_resource)
 
-Description: The ID of the scaling plan
-
-### <a name="output_scaling_plan_name"></a> [scaling\_plan\_name](#output\_scaling\_plan\_name)
-
-Description: The name of the scaling plan
+Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
 
 ## Modules
 
