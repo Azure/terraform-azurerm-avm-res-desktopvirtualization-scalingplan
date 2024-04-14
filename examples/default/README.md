@@ -44,7 +44,6 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
-# This is the module call
 module "hostpool" {
   source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
   version                                            = "0.1.4"
