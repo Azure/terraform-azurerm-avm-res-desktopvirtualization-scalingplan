@@ -178,14 +178,6 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_host_pool"></a> [host\_pool](#input\_host\_pool)
-
-Description: The name of the AVD Host Pool to assign the scaling plan to.
-
-Type: `string`
-
-Default: `"avdhostpool"`
-
 ### <a name="input_virtual_desktop_scaling_plan_name"></a> [virtual\_desktop\_scaling\_plan\_name](#input\_virtual\_desktop\_scaling\_plan\_name)
 
 Description: The name of the AVD Scaling Plan.

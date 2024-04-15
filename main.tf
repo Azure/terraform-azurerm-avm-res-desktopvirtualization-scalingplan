@@ -63,14 +63,6 @@ resource "azurerm_role_assignment" "this" {
   skip_service_principal_aad_check       = each.value.skip_service_principal_aad_check
 }
 
-resource "azurerm_management_lock" "this" {
-  count = var.lock.kind != "None" ? 1 : 0
-
-  lock_level = var.lock.kind
-  name       = coalesce(var.lock.name, "lock-${var.virtual_desktop_scaling_plan_name}")
-  scope      = azurerm_virtual_desktop_scaling_plan.this.id
-}
-
 # Create Diagnostic Settings for AVD application group
 resource "azurerm_monitor_diagnostic_setting" "this" {
   for_each = var.diagnostic_settings

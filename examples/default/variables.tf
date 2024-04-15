@@ -8,12 +8,6 @@ If it is set to false, then no telemetry will be collected.
 DESCRIPTION
 }
 
-variable "host_pool" {
-  type        = string
-  default     = "avdhostpool"
-  description = "The name of the AVD Host Pool to assign the scaling plan to."
-}
-
 variable "virtual_desktop_scaling_plan_name" {
   type        = string
   default     = "avdscalingplan"
