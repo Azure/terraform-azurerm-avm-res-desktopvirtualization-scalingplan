@@ -32,27 +32,23 @@ module "naming" {
   version = "0.3.0"
 }
 
-# This picks a random region from the list of regions.
-resource "random_integer" "region_index" {
-  min = 0
-  max = length(local.azure_regions) - 1
-}
-
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
+  location = "eastus"
   name     = module.naming.resource_group.name_unique
-  location = local.azure_regions[random_integer.region_index.result]
 }
 
-# This is the module call
 module "hostpool" {
-  source              = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version             = "0.1.2"
-  enable_telemetry    = var.enable_telemetry
-  hostpool            = var.host_pool
-  hostpooltype        = "Pooled"
-  resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
+  source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version                                            = "0.1.4"
+  enable_telemetry                                   = var.enable_telemetry
+  resource_group_name                                = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_type                     = "Pooled"
+  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
+  virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
+  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_name                     = "vdpool-avd-01"
+  virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
 # Get the subscription
@@ -70,11 +66,12 @@ data "azurerm_role_definition" "power_role" {
 }
 
 resource "azurerm_role_assignment" "new" {
-  name                             = random_uuid.example.result
-  scope                            = data.azurerm_subscription.primary.id
-  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
   principal_id                     = data.azuread_service_principal.spn.object_id
+  scope                            = data.azurerm_subscription.primary.id
+  name                             = random_uuid.example.result
+  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
   skip_service_principal_aad_check = true
+
   lifecycle {
     ignore_changes = all
   }
@@ -86,12 +83,12 @@ module "scplan" {
   enable_telemetry                                 = var.enable_telemetry
   virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
-  virtual_desktop_scaling_plan_time_zone           = var.virtual_desktop_scaling_plan_time_zone
-  virtual_desktop_scaling_plan_name                = var.virtual_desktop_scaling_plan_name
+  virtual_desktop_scaling_plan_time_zone           = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_name                = "avdscalingplan"
   virtual_desktop_scaling_plan_host_pool = toset(
     [
       {
-        hostpool_id          = module.hostpool.azure_virtual_desktop_host_pool_id
+        hostpool_id          = module.hostpool.resource.id
         scaling_plan_enabled = true
       }
     ]
@@ -173,7 +170,6 @@ The following resources are used by this module:
 
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
 - [azurerm_role_assignment.new](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
-- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
 - [random_uuid.example](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
 - [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) (data source)
 - [azurerm_role_definition.power_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
@@ -198,30 +194,6 @@ Type: `bool`
 
 Default: `true`
 
-### <a name="input_host_pool"></a> [host\_pool](#input\_host\_pool)
-
-Description: The name of the AVD Host Pool to assign the scaling plan to.
-
-Type: `string`
-
-Default: `"avdhostpool"`
-
-### <a name="input_virtual_desktop_scaling_plan_name"></a> [virtual\_desktop\_scaling\_plan\_name](#input\_virtual\_desktop\_scaling\_plan\_name)
-
-Description: The name of the AVD Scaling Plan.
-
-Type: `string`
-
-Default: `"avdscalingplan"`
-
-### <a name="input_virtual_desktop_scaling_plan_time_zone"></a> [virtual\_desktop\_scaling\_plan\_time\_zone](#input\_virtual\_desktop\_scaling\_plan\_time\_zone)
-
-Description: The time zone of the AVD Scaling Plan.
-
-Type: `string`
-
-Default: `"Eastern Standard Time"`
-
 ## Outputs
 
 No outputs.
@@ -234,7 +206,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version: 0.1.2
+Version: 0.1.4
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 

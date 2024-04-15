@@ -10,18 +10,12 @@ DESCRIPTION
 
 variable "virtual_desktop_scaling_plan_name" {
   type        = string
-  default     = "avdscalingplan"
+  default     = "avdscalingplandiag"
   description = "The name of the AVD Scaling Plan."
 }
 
 variable "virtual_desktop_scaling_plan_time_zone" {
   type        = string
-  description = "The time zone of the AVD Scaling Plan."
   default     = "Eastern Standard Time"
-}
-
-variable "host_pool" {
-  type        = string
-  default     = "avdhostpool"
-  description = "The name of the AVD Host Pool to assign the scaling plan to."
+  description = "The time zone of the AVD Scaling Plan."
 }

@@ -1,9 +1,4 @@
-output "scaling_plan_name" {
-  description = "The name of the scaling plan"
-  value       = azurerm_virtual_desktop_scaling_plan.this.name
-}
-
-output "scaling_plan_id" {
-  description = "The ID of the scaling plan"
-  value       = azurerm_virtual_desktop_scaling_plan.this.id
+output "resource" {
+  description = "This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id"
+  value       = azurerm_virtual_desktop_scaling_plan.this
 }
