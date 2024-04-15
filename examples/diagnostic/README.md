@@ -216,7 +216,7 @@ Description: The name of the AVD Scaling Plan.
 
 Type: `string`
 
-Default: `"avdscalingplan"`
+Default: `"avdscalingplandiag"`
 
 ### <a name="input_virtual_desktop_scaling_plan_time_zone"></a> [virtual\_desktop\_scaling\_plan\_time\_zone](#input\_virtual\_desktop\_scaling\_plan\_time\_zone)
 

@@ -26,7 +26,6 @@ module "naming" {
   version = "0.3.0"
 }
 
-
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
   location = "eastus"
@@ -78,8 +77,8 @@ module "scplan" {
   enable_telemetry                                 = var.enable_telemetry
   virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
-  virtual_desktop_scaling_plan_time_zone           = var.virtual_desktop_scaling_plan_time_zone
-  virtual_desktop_scaling_plan_name                = var.virtual_desktop_scaling_plan_name
+  virtual_desktop_scaling_plan_time_zone           = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_name                = "avdscalingplan"
   virtual_desktop_scaling_plan_host_pool = toset(
     [
       {

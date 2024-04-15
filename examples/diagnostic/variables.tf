@@ -10,7 +10,7 @@ DESCRIPTION
 
 variable "virtual_desktop_scaling_plan_name" {
   type        = string
-  default     = "avdscalingplan"
+  default     = "avdscalingplandiag"
   description = "The name of the AVD Scaling Plan."
 }
 
