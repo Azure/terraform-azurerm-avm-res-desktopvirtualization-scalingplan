@@ -5,10 +5,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.11.1, < 4.0.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.5.1, < 4.0.0"
-    }
   }
 }
 
@@ -49,11 +45,11 @@ module "hostpool" {
 
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
-  account_replication_type = "LRS"
-  account_tier             = "Standard"
+  resource_group_name      = azurerm_resource_group.this.name
   location                 = azurerm_resource_group.this.location
   name                     = module.naming.storage_account.name_unique
-  resource_group_name      = azurerm_resource_group.this.name
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
 }
 
 # This is the module call
