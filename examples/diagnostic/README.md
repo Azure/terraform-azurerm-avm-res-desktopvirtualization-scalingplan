@@ -36,7 +36,7 @@ resource "azurerm_resource_group" "this" {
 
 module "hostpool" {
   source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                            = "latest"
+  version                                            = "0.1.4"
   enable_telemetry                                   = var.enable_telemetry
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"
@@ -232,7 +232,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version: latest
+Version: 0.1.4
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
