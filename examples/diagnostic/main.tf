@@ -5,6 +5,10 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.11.1, < 4.0.0"
     }
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.5.1, < 4.0.0"
+    }
   }
 }
 
@@ -49,7 +53,7 @@ resource "azurerm_storage_account" "this" {
   location                 = azurerm_resource_group.this.location
   name                     = module.naming.storage_account.name_unique
   account_tier             = "Standard"
-  account_replication_type = "GRS"
+  account_replication_type = "ZRS"
 }
 
 # This is the module call
