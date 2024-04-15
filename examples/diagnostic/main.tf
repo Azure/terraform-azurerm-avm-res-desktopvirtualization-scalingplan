@@ -30,7 +30,7 @@ resource "azurerm_resource_group" "this" {
 
 module "hostpool" {
   source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                            = latest
+  version                                            = "latest"
   enable_telemetry                                   = var.enable_telemetry
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"

@@ -28,21 +28,15 @@ module "naming" {
   version = "0.3.0"
 }
 
-# This picks a random region from the list of regions.
-resource "random_integer" "region_index" {
-  max = length(local.azure_regions) - 1
-  min = 0
-}
-
 # This is required for resource modules
 resource "azurerm_resource_group" "this" {
-  location = local.azure_regions[random_integer.region_index.result]
+  location = "eastus"
   name     = module.naming.resource_group.name_unique
 }
 
 module "hostpool" {
   source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                            = "0.1.4"
+  version                                            = "latest"
   enable_telemetry                                   = var.enable_telemetry
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"
@@ -55,11 +49,37 @@ module "hostpool" {
 
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "this" {
-  resource_group_name      = azurerm_resource_group.this.name
+  account_replication_type = "ZRS"
+  account_tier             = "Standard"
   location                 = azurerm_resource_group.this.location
   name                     = module.naming.storage_account.name_unique
-  account_tier             = "Standard"
-  account_replication_type = "ZRS"
+  resource_group_name      = azurerm_resource_group.this.name
+}
+
+# Get the subscription
+data "azurerm_subscription" "this" {}
+
+# Get the service principal for Azure Vitual Desktop
+data "azuread_service_principal" "spn" {
+  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
+}
+
+resource "random_uuid" "example" {}
+
+data "azurerm_role_definition" "power_role" {
+  name = "Desktop Virtualization Power On Off Contributor"
+}
+
+resource "azurerm_role_assignment" "new" {
+  principal_id                     = data.azuread_service_principal.spn.object_id
+  scope                            = data.azurerm_subscription.this.id
+  name                             = random_uuid.example.result
+  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
+  skip_service_principal_aad_check = true
+
+  lifecycle {
+    ignore_changes = all
+  }
 }
 
 # This is the module call
@@ -147,6 +167,8 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
+- <a name="provider_azuread"></a> [azuread](#provider\_azuread)
+
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.11.1, < 4.0.0)
 
 - <a name="provider_random"></a> [random](#provider\_random) (>= 3.5.1, < 4.0.0)
@@ -156,8 +178,12 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
+- [azurerm_role_assignment.new](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
 - [azurerm_storage_account.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/storage_account) (resource)
-- [random_integer.region_index](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/integer) (resource)
+- [random_uuid.example](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
+- [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) (data source)
+- [azurerm_role_definition.power_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
+- [azurerm_subscription.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs
@@ -206,7 +232,7 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version: 0.1.4
+Version: latest
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
