@@ -68,16 +68,13 @@ data "azurerm_role_definition" "power_role" {
   name = "Desktop Virtualization Power On Off Contributor"
 }
 
-resource "azurerm_role_assignment" "new" {
-  principal_id                     = data.azuread_service_principal.spn.object_id
-  scope                            = data.azurerm_subscription.this.id
-  name                             = random_uuid.example.result
-  role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
-  skip_service_principal_aad_check = true
 
-  lifecycle {
-    ignore_changes = all
-  }
+# Assign the role to the service principal
+resource "azurerm_role_assignment" "this" {
+  principal_id                     = data.azuread_service_principal.spn.object_id
+  scope                            = data.azurerm_subscription.primary.id
+  role_definition_name             = data.azurerm_role_definition.power_role.name
+  skip_service_principal_aad_check = true
 }
 
 # This is the module call
