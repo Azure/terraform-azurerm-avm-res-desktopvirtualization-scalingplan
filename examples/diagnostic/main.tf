@@ -11,7 +11,7 @@ terraform {
     }
     random = {
       source  = "hashicorp/random"
-      version = ">= 3.5.1, < 4.0.0"
+      version = ">= 3.1.0, < 4.0.0"
     }
   }
 }
@@ -32,6 +32,19 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
+# This is the storage account for the diagnostic settings
+resource "azurerm_storage_account" "storageaccount" {
+  account_replication_type = "GRS"
+  account_tier             = "Standard"
+  location                 = azurerm_resource_group.this.location
+  name                     = module.naming.storage_account.name_unique
+  resource_group_name      = azurerm_resource_group.this.name
+
+  identity {
+    type = "SystemAssigned"
+  }
+}
+
 module "hostpool" {
   source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
   version                                            = "0.1.4"
@@ -45,17 +58,9 @@ module "hostpool" {
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
-# This is the storage account for the diagnostic settings
-resource "azurerm_storage_account" "this" {
-  account_replication_type = "ZRS"
-  account_tier             = "Standard"
-  location                 = azurerm_resource_group.this.location
-  name                     = module.naming.storage_account.name_unique
-  resource_group_name      = azurerm_resource_group.this.name
-}
 
 # Get the subscription
-data "azurerm_subscription" "this" {}
+data "azurerm_subscription" "primary" {}
 
 # Get the service principal for Azure Vitual Desktop
 data "azuread_service_principal" "spn" {
@@ -70,7 +75,7 @@ data "azurerm_role_definition" "power_role" {
 
 resource "azurerm_role_assignment" "new" {
   principal_id                     = data.azuread_service_principal.spn.object_id
-  scope                            = data.azurerm_subscription.this.id
+  scope                            = data.azurerm_subscription.primary.id
   name                             = random_uuid.example.result
   role_definition_id               = data.azurerm_role_definition.power_role.role_definition_id
   skip_service_principal_aad_check = true
@@ -144,7 +149,7 @@ module "scplan" {
   diagnostic_settings = {
     to_law = {
       name                        = "to-storage-account"
-      storage_account_resource_id = azurerm_storage_account.this.id
+      storage_account_resource_id = azurerm_storage_account.storageaccount.id
     }
   }
 }
