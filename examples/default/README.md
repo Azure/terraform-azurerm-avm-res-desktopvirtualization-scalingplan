@@ -47,26 +47,6 @@ module "hostpool" {
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
-# Get the subscription
-data "azurerm_subscription" "this" {}
-
-# Get the service principal for Azure Vitual Desktop
-data "azuread_service_principal" "spn" {
-  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
-}
-
-data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
-}
-
-# Assign the role to the service principal
-resource "azurerm_role_assignment" "this" {
-  principal_id                     = data.azuread_service_principal.spn.object_id
-  scope                            = data.azurerm_subscription.this.id
-  role_definition_name             = data.azurerm_role_definition.power_role.name
-  skip_service_principal_aad_check = true
-}
-
 # This is the module call
 module "scplan" {
   source                                           = "../../"
@@ -146,8 +126,6 @@ The following requirements are needed by this module:
 
 The following providers are used by this module:
 
-- <a name="provider_azuread"></a> [azuread](#provider\_azuread) (>= 2.44.1, < 3.0.0)
-
 - <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) (>= 3.11.1, < 4.0.0)
 
 ## Resources
@@ -155,10 +133,6 @@ The following providers are used by this module:
 The following resources are used by this module:
 
 - [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/resource_group) (resource)
-- [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
-- [azuread_service_principal.spn](https://registry.terraform.io/providers/hashicorp/azuread/latest/docs/data-sources/service_principal) (data source)
-- [azurerm_role_definition.power_role](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/role_definition) (data source)
-- [azurerm_subscription.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/subscription) (data source)
 
 <!-- markdownlint-disable MD013 -->
 ## Required Inputs

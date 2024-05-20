@@ -41,26 +41,6 @@ module "hostpool" {
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
-# Get the subscription
-data "azurerm_subscription" "this" {}
-
-# Get the service principal for Azure Vitual Desktop
-data "azuread_service_principal" "spn" {
-  client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
-}
-
-data "azurerm_role_definition" "power_role" {
-  name = "Desktop Virtualization Power On Off Contributor"
-}
-
-# Assign the role to the service principal
-resource "azurerm_role_assignment" "this" {
-  principal_id                     = data.azuread_service_principal.spn.object_id
-  scope                            = data.azurerm_subscription.this.id
-  role_definition_name             = data.azurerm_role_definition.power_role.name
-  skip_service_principal_aad_check = true
-}
-
 # This is the module call
 module "scplan" {
   source                                           = "../../"
