@@ -9,10 +9,6 @@ terraform {
       source  = "hashicorp/azurerm"
       version = ">= 3.11.1, < 4.0.0"
     }
-    random = {
-      source  = "hashicorp/random"
-      version = ">= 3.5.1, < 4.0.0"
-    }
   }
 }
 
@@ -62,17 +58,14 @@ data "azuread_service_principal" "spn" {
   client_id = "9cdead84-a844-4324-93f2-b2e6bb768d07"
 }
 
-resource "random_uuid" "example" {}
-
 data "azurerm_role_definition" "power_role" {
   name = "Desktop Virtualization Power On Off Contributor"
 }
 
-
 # Assign the role to the service principal
 resource "azurerm_role_assignment" "this" {
   principal_id                     = data.azuread_service_principal.spn.object_id
-  scope                            = data.azurerm_subscription.primary.id
+  scope                            = data.azurerm_subscription.this.id
   role_definition_name             = data.azurerm_role_definition.power_role.name
   skip_service_principal_aad_check = true
 }
