@@ -205,6 +205,7 @@ map(object({
     condition                              = optional(string, null)
     condition_version                      = optional(string, null)
     delegated_managed_identity_resource_id = optional(string, null)
+    principal_type                         = optional(string, null)
   }))
 ```
 
@@ -291,6 +292,10 @@ Default: `null`
 The following outputs are exported:
 
 ### <a name="output_resource"></a> [resource](#output\_resource)
+
+Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
+
+### <a name="output_resource_id"></a> [resource\_id](#output\_resource\_id)
 
 Description: This output is the full output for the resource to allow flexibility to reference all possible values for the resource. Example usage: module.<modulename>.resource.id
 
