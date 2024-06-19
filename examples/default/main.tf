@@ -39,7 +39,7 @@ module "hostpool" {
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"
   virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
-  virtual_desktop_host_pool_load_balancer_type       = "DepthFirst"
+  virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
   virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
   virtual_desktop_host_pool_name                     = "vdpool-avd-01"
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
