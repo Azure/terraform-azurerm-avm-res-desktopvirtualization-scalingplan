@@ -64,7 +64,6 @@ module "hostpool" {
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
-
 # Get the subscription
 data "azurerm_subscription" "primary" {}
 
