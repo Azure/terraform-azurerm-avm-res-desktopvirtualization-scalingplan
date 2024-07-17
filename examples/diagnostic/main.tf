@@ -32,6 +32,8 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
+
+
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "storageaccount" {
   account_replication_type = "ZRS"
@@ -47,7 +49,7 @@ resource "azurerm_storage_account" "storageaccount" {
 
 module "hostpool" {
   source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                            = "0.1.5"
+  version                                            = "0.2.0"
   enable_telemetry                                   = var.enable_telemetry
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"
