@@ -169,12 +169,6 @@ variable "role_assignments" {
   nullable    = false
 }
 
-variable "tags" {
-  type        = map(string)
-  default     = null
-  description = "(Optional) Tags of the resource."
-}
-
 variable "virtual_desktop_scaling_plan_description" {
   type        = string
   default     = null
