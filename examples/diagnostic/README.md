@@ -23,7 +23,11 @@ terraform {
 }
 
 provider "azurerm" {
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 # This ensures we have unique CAF compliant names for our resources.
@@ -118,7 +122,7 @@ module "scplan" {
         ramp_up_minimum_hosts_percent        = 50
         ramp_up_capacity_threshold_percent   = 80
         peak_start_time                      = "10:00"
-        peak_load_balancing_algorithm        = "DepthFirst"
+        peak_load_balancing_algorithm        = "BreadthFirst"
         ramp_down_start_time                 = "17:00"
         ramp_down_load_balancing_algorithm   = "BreadthFirst"
         ramp_down_minimum_hosts_percent      = 50
@@ -138,7 +142,7 @@ module "scplan" {
         ramp_up_minimum_hosts_percent        = 50
         ramp_up_capacity_threshold_percent   = 80
         peak_start_time                      = "10:00"
-        peak_load_balancing_algorithm        = "DepthFirst"
+        peak_load_balancing_algorithm        = "BreadthFirst"
         ramp_down_start_time                 = "17:00"
         ramp_down_load_balancing_algorithm   = "BreadthFirst"
         ramp_down_minimum_hosts_percent      = 50
