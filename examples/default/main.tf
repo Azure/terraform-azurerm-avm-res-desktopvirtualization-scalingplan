@@ -64,6 +64,8 @@ data "azurerm_role_definition" "power_role" {
 }
 
 resource "azurerm_role_assignment" "new" {
+  count = var.create_role_assignment ? 1 : 0
+
   principal_id                     = data.azuread_service_principal.spn.object_id
   scope                            = data.azurerm_subscription.primary.id
   name                             = random_uuid.example.result
