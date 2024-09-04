@@ -209,7 +209,7 @@ Description: Whether to create the role assignment
 
 Type: `bool`
 
-Default: `true`
+Default: `false`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 
