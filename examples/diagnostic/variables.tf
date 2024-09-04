@@ -1,3 +1,9 @@
+variable "create_role_assignment" {
+  type        = bool
+  default     = false
+  description = "Whether to create the role assignment"
+}
+
 variable "enable_telemetry" {
   type        = bool
   default     = true

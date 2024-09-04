@@ -85,6 +85,8 @@ data "azurerm_role_definition" "power_role" {
 }
 
 resource "azurerm_role_assignment" "new" {
+  count = var.create_role_assignment ? 1 : 0
+
   principal_id                     = data.azuread_service_principal.spn.object_id
   scope                            = data.azurerm_subscription.primary.id
   name                             = random_uuid.example.result
@@ -95,6 +97,7 @@ resource "azurerm_role_assignment" "new" {
     ignore_changes = all
   }
 }
+
 
 # This is the module call
 module "scplan" {
@@ -199,6 +202,14 @@ No required inputs.
 ## Optional Inputs
 
 The following input variables are optional (have default values):
+
+### <a name="input_create_role_assignment"></a> [create\_role\_assignment](#input\_create\_role\_assignment)
+
+Description: Whether to create the role assignment
+
+Type: `bool`
+
+Default: `false`
 
 ### <a name="input_enable_telemetry"></a> [enable\_telemetry](#input\_enable\_telemetry)
 

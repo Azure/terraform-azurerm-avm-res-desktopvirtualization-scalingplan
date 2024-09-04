@@ -11,6 +11,7 @@ resource "azurerm_virtual_desktop_scaling_plan" "this" {
 
   dynamic "schedule" {
     for_each = var.virtual_desktop_scaling_plan_schedule
+
     content {
       days_of_week                         = schedule.value.days_of_week
       name                                 = schedule.value.name
@@ -34,6 +35,7 @@ resource "azurerm_virtual_desktop_scaling_plan" "this" {
   }
   dynamic "host_pool" {
     for_each = var.virtual_desktop_scaling_plan_host_pool == null ? [] : var.virtual_desktop_scaling_plan_host_pool
+
     content {
       hostpool_id          = host_pool.value.hostpool_id
       scaling_plan_enabled = host_pool.value.scaling_plan_enabled
@@ -41,6 +43,7 @@ resource "azurerm_virtual_desktop_scaling_plan" "this" {
   }
   dynamic "timeouts" {
     for_each = var.virtual_desktop_scaling_plan_timeouts == null ? [] : [var.virtual_desktop_scaling_plan_timeouts]
+
     content {
       create = timeouts.value.create
       delete = timeouts.value.delete
@@ -77,12 +80,14 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
 
   dynamic "enabled_log" {
     for_each = each.value.log_categories
+
     content {
       category = enabled_log.value
     }
   }
   dynamic "enabled_log" {
     for_each = each.value.log_groups
+
     content {
       category_group = enabled_log.value
     }
