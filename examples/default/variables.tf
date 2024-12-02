@@ -1,6 +1,6 @@
 variable "create_role_assignment" {
   type        = bool
-  default     = true
+  default     = false
   description = "Whether to create the role assignment"
 }
 
