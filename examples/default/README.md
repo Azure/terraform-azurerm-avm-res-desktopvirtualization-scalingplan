@@ -5,7 +5,7 @@ This deploys the module in its simplest form with supporting Pooled Hostpool.
 
 ```hcl
 terraform {
-  required_version = ">= 1.6.6, < 2.0.0"
+  required_version = ">= 1.9, < 2.0"
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
@@ -152,7 +152,7 @@ module "scplan" {
 
 The following requirements are needed by this module:
 
-- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.6.6, < 2.0.0)
+- <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
 
 - <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.44.1, < 3.0.0)
 
