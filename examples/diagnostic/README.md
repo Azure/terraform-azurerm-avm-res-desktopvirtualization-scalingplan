@@ -58,15 +58,16 @@ resource "azurerm_storage_account" "storageaccount" {
 }
 
 module "hostpool" {
-  source                                             = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version                                            = "0.2.0"
-  enable_telemetry                                   = var.enable_telemetry
+  source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
+  version = "0.2.0"
+
   resource_group_name                                = azurerm_resource_group.this.name
-  virtual_desktop_host_pool_type                     = "Pooled"
-  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
   virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
-  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
   virtual_desktop_host_pool_name                     = "vdpool-avd-02"
+  virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
+  virtual_desktop_host_pool_type                     = "Pooled"
+  enable_telemetry                                   = var.enable_telemetry
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
@@ -101,20 +102,11 @@ resource "azurerm_role_assignment" "new" {
 
 # This is the module call
 module "scplan" {
-  source                                           = "../../"
-  enable_telemetry                                 = var.enable_telemetry
+  source = "../../"
+
   virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
-  virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
-  virtual_desktop_scaling_plan_time_zone           = "Eastern Standard Time"
   virtual_desktop_scaling_plan_name                = "avdscalingplan"
-  virtual_desktop_scaling_plan_host_pool = toset(
-    [
-      {
-        hostpool_id          = module.hostpool.resource.id
-        scaling_plan_enabled = true
-      }
-    ]
-  )
+  virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_scaling_plan_schedule = toset(
     [
       {
@@ -159,13 +151,24 @@ module "scplan" {
       }
     ]
   )
-  depends_on = [azurerm_resource_group.this, module.hostpool]
+  virtual_desktop_scaling_plan_time_zone = "Eastern Standard Time"
   diagnostic_settings = {
     to_law = {
       name                        = "to-storage-account"
       storage_account_resource_id = azurerm_storage_account.storageaccount.id
     }
   }
+  enable_telemetry = var.enable_telemetry
+  virtual_desktop_scaling_plan_host_pool = toset(
+    [
+      {
+        hostpool_id          = module.hostpool.resource.id
+        scaling_plan_enabled = true
+      }
+    ]
+  )
+
+  depends_on = [azurerm_resource_group.this, module.hostpool]
 }
 ```
 
