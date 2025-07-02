@@ -6,6 +6,7 @@ This deploys the module in its simplest form with supporting Pooled Hostpool.
 ```hcl
 terraform {
   required_version = ">= 1.9, < 2.0"
+
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
