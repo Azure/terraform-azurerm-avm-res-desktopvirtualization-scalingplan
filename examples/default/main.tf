@@ -14,6 +14,10 @@ terraform {
       source  = "hashicorp/random"
       version = ">= 3.5.1, < 4.0.0"
     }
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 2.4"
+    }
   }
 }
 
@@ -82,7 +86,8 @@ resource "azurerm_role_assignment" "new" {
 # This is the module call
 module "scplan" {
   source = "../../"
-
+  
+  virtual_desktop_scaling_plan_type                = "Pooled"
   virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_name                = "avdscalingplan"
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
