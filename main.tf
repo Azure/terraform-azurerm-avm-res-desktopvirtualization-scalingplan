@@ -66,10 +66,10 @@ resource "azurerm_virtual_desktop_scaling_plan" "this" {
 resource "azapi_resource" "this" {
   count = var.virtual_desktop_scaling_plan_type == "Personal" ? 1 : 0
 
-  type      = "Microsoft.DesktopVirtualization/scalingPlans@2024-04-03"
-  name      = var.virtual_desktop_scaling_plan_name
   location  = var.virtual_desktop_scaling_plan_location
+  name      = var.virtual_desktop_scaling_plan_name
   parent_id = data.azurerm_resource_group.this.id
+  type      = "Microsoft.DesktopVirtualization/scalingPlans@2024-04-03"
   body = {
     properties = {
       timeZone     = var.virtual_desktop_scaling_plan_time_zone,
@@ -78,15 +78,18 @@ resource "azapi_resource" "this" {
       description  = var.virtual_desktop_scaling_plan_description,
       friendlyName = var.virtual_desktop_scaling_plan_friendly_name,
       schedules    = []
-      hostPoolReferences = [ for host_pool in var.virtual_desktop_scaling_plan_host_pool : {
-          hostPoolArmPath    = host_pool.hostpool_id
-          scalingPlanEnabled = host_pool.scaling_plan_enabled
-        } 
+      hostPoolReferences = [for host_pool in var.virtual_desktop_scaling_plan_host_pool : {
+        hostPoolArmPath    = host_pool.hostpool_id
+        scalingPlanEnabled = host_pool.scaling_plan_enabled
+        }
       ]
     }
   }
-  
+  create_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers           = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
   response_export_values = ["*"]
+  update_headers         = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 
   lifecycle {
     ignore_changes = [
@@ -97,59 +100,63 @@ resource "azapi_resource" "this" {
 
 # scaling plan for personal pools
 resource "azapi_resource" "this_personal_schedule" {
-  for_each = var.virtual_desktop_scaling_plan_type == "Personal" ? { for schedule in var.virtual_desktop_scaling_plan_schedule : 
+  for_each = var.virtual_desktop_scaling_plan_type == "Personal" ? { for schedule in var.virtual_desktop_scaling_plan_schedule :
     schedule.name => schedule
   } : {}
 
-  type      = "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2024-04-03"
   name      = each.value.name
   parent_id = azapi_resource.this[0].id
+  type      = "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2024-04-03"
   body = {
     properties = {
       daysOfWeek = each.value.days_of_week
 
       rampUpStartTime = {
         hour   = each.value.ramp_up_start_time_hour,
-        minute = each.value.ramp_up_start_time_minute 
+        minute = each.value.ramp_up_start_time_minute
       },
-      rampUpAutoStartHosts            = each.value.ramp_up_auto_start_hosts, 
-      rampUpStartVMOnConnect          = each.value.ramp_up_start_vm_on_connect, 
-      rampUpMinutesToWaitOnDisconnect = each.value.ramp_up_minutes_to_wait_on_disconnect, 
+      rampUpAutoStartHosts            = each.value.ramp_up_auto_start_hosts,
+      rampUpStartVMOnConnect          = each.value.ramp_up_start_vm_on_connect,
+      rampUpMinutesToWaitOnDisconnect = each.value.ramp_up_minutes_to_wait_on_disconnect,
       rampUpActionOnDisconnect        = each.value.ramp_up_action_on_disconnect,
-      rampUpMinutesToWaitOnLogoff     = each.value.ramp_up_minutes_to_wait_on_logoff, 
-      rampUpActionOnLogoff            = each.value.ramp_up_action_on_logoff, 
+      rampUpMinutesToWaitOnLogoff     = each.value.ramp_up_minutes_to_wait_on_logoff,
+      rampUpActionOnLogoff            = each.value.ramp_up_action_on_logoff,
 
       peakStartTime = {
-        hour   = each.value.peak_start_time_hour, 
-        minute = each.value.peak_start_time_minute 
+        hour   = each.value.peak_start_time_hour,
+        minute = each.value.peak_start_time_minute
       },
-      peakStartVMOnConnect          = each.value.peak_start_vm_on_connect, 
+      peakStartVMOnConnect          = each.value.peak_start_vm_on_connect,
       peakMinutesToWaitOnDisconnect = each.value.peak_minutes_to_wait_on_disconnect,
-      peakActionOnDisconnect        = each.value.peak_action_on_disconnect, 
-      peakMinutesToWaitOnLogoff     = each.value.peak_minutes_to_wait_on_logoff, 
+      peakActionOnDisconnect        = each.value.peak_action_on_disconnect,
+      peakMinutesToWaitOnLogoff     = each.value.peak_minutes_to_wait_on_logoff,
       peakActionOnLogoff            = each.value.peak_action_on_logoff,
 
       rampDownStartTime = {
-        hour   = each.value.ramp_down_start_time_hour, 
-        minute = each.value.ramp_down_start_time_minute 
+        hour   = each.value.ramp_down_start_time_hour,
+        minute = each.value.ramp_down_start_time_minute
       },
-      rampDownStartVMOnConnect          = each.value.ramp_down_start_vm_on_connect, 
-      rampDownMinutesToWaitOnDisconnect = each.value.ramp_down_minutes_to_wait_on_disconnect, 
-      rampDownActionOnDisconnect        = each.value.ramp_down_action_on_disconnect, 
-      rampDownMinutesToWaitOnLogoff     = each.value.ramp_down_minutes_to_wait_on_logoff, 
-      rampDownActionOnLogoff            = each.value.ramp_down_action_on_logoff, 
+      rampDownStartVMOnConnect          = each.value.ramp_down_start_vm_on_connect,
+      rampDownMinutesToWaitOnDisconnect = each.value.ramp_down_minutes_to_wait_on_disconnect,
+      rampDownActionOnDisconnect        = each.value.ramp_down_action_on_disconnect,
+      rampDownMinutesToWaitOnLogoff     = each.value.ramp_down_minutes_to_wait_on_logoff,
+      rampDownActionOnLogoff            = each.value.ramp_down_action_on_logoff,
 
       offPeakStartTime = {
-        hour   = each.value.off_peak_start_time_hour, 
-        minute = each.value.off_peak_start_time_minute 
+        hour   = each.value.off_peak_start_time_hour,
+        minute = each.value.off_peak_start_time_minute
       },
-      offPeakStartVMOnConnect          = each.value.off_peak_start_vm_on_connect, 
+      offPeakStartVMOnConnect          = each.value.off_peak_start_vm_on_connect,
       offPeakMinutesToWaitOnDisconnect = each.value.off_peak_minutes_to_wait_on_disconnect,
-      offPeakActionOnDisconnect        = each.value.off_peak_action_on_disconnect, 
-      offPeakMinutesToWaitOnLogoff     = each.value.off_peak_minutes_to_wait_on_logoff, 
-      offPeakActionOnLogoff            = each.value.off_peak_action_on_logoff, 
+      offPeakActionOnDisconnect        = each.value.off_peak_action_on_disconnect,
+      offPeakMinutesToWaitOnLogoff     = each.value.off_peak_minutes_to_wait_on_logoff,
+      offPeakActionOnLogoff            = each.value.off_peak_action_on_logoff,
     }
   }
+  create_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  delete_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  read_headers   = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
+  update_headers = var.enable_telemetry ? { "User-Agent" : local.avm_azapi_header } : null
 }
 
 resource "azurerm_role_assignment" "this" {

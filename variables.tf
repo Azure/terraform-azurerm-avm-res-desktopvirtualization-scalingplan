@@ -10,12 +10,6 @@ variable "virtual_desktop_scaling_plan_name" {
   nullable    = false
 }
 
-variable "virtual_desktop_scaling_plan_type" {
-  type        = string
-  description = "(Required) The scaling plan type which will be used for pooled or personal pool. Valid options are `Personal` or `Pooled` Changing this forces a new Virtual Desktop Scaling Plan to be created."
-  nullable    = false
-}
-
 variable "virtual_desktop_scaling_plan_resource_group_name" {
   type        = string
   description = "(Required) The name of the Resource Group where the Virtual Desktop Scaling Plan should exist. Changing this forces a new Virtual Desktop Scaling Plan to be created."
@@ -133,6 +127,12 @@ EOT
 variable "virtual_desktop_scaling_plan_time_zone" {
   type        = string
   description = "(Required) Specifies the Time Zone which should be used by the Scaling Plan for time based events, [the possible values are defined here](https://jackstromberg.com/2017/01/list-of-time-zones-consumed-by-azure/)."
+  nullable    = false
+}
+
+variable "virtual_desktop_scaling_plan_type" {
+  type        = string
+  description = "(Required) The scaling plan type which will be used for pooled or personal pool. Valid options are `Personal` or `Pooled` Changing this forces a new Virtual Desktop Scaling Plan to be created."
   nullable    = false
 }
 

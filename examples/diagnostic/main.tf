@@ -2,6 +2,10 @@ terraform {
   required_version = ">= 1.9, < 2.0"
 
   required_providers {
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 2.4"
+    }
     azuread = {
       source  = "hashicorp/azuread"
       version = ">= 2.44.1, < 3.0.0"
@@ -13,10 +17,6 @@ terraform {
     random = {
       source  = "hashicorp/random"
       version = ">= 3.1.0, < 4.0.0"
-    }
-    azapi = {
-      source  = "Azure/azapi"
-      version = "~> 2.4"
     }
   }
 }
@@ -103,7 +103,6 @@ resource "azurerm_role_assignment" "new" {
 module "scplan" {
   source = "../../"
 
-  virtual_desktop_scaling_plan_type                = "Pooled"
   virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_name                = "avdscalingplan"
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
@@ -152,6 +151,7 @@ module "scplan" {
     ]
   )
   virtual_desktop_scaling_plan_time_zone = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_type      = "Pooled"
   diagnostic_settings = {
     to_law = {
       name                        = "to-storage-account"

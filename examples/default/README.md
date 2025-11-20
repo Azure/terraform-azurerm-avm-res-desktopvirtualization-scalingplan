@@ -9,6 +9,10 @@ terraform {
   required_version = ">= 1.9, < 2.0"
 
   required_providers {
+    azapi = {
+      source  = "Azure/azapi"
+      version = "~> 2.4"
+    }
     azuread = {
       source  = "hashicorp/azuread"
       version = ">= 2.44.1, < 3.0.0"
@@ -138,6 +142,7 @@ module "scplan" {
     ]
   )
   virtual_desktop_scaling_plan_time_zone = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_type      = "Pooled"
   enable_telemetry                       = var.enable_telemetry
   virtual_desktop_scaling_plan_host_pool = toset(
     [
@@ -158,6 +163,8 @@ module "scplan" {
 The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
+
+- <a name="requirement_azapi"></a> [azapi](#requirement\_azapi) (~> 2.4)
 
 - <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.44.1, < 3.0.0)
 
