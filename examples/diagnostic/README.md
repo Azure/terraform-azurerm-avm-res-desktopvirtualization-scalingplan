@@ -32,10 +32,6 @@ provider "azurerm" {
   }
 }
 
-provider "azuread" {
-  # Using Azure CLI authentication by default
-}
-
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/naming/azurerm"
