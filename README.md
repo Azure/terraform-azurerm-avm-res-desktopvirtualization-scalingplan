@@ -31,6 +31,8 @@ The following requirements are needed by this module:
 
 The following resources are used by this module:
 
+- [azapi_resource.this](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
+- [azapi_resource.this_personal_schedule](https://registry.terraform.io/providers/Azure/azapi/latest/docs/resources/resource) (resource)
 - [azurerm_management_lock.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/management_lock) (resource)
 - [azurerm_monitor_diagnostic_setting.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/monitor_diagnostic_setting) (resource)
 - [azurerm_role_assignment.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/role_assignment) (resource)
@@ -38,6 +40,7 @@ The following resources are used by this module:
 - [modtm_telemetry.telemetry](https://registry.terraform.io/providers/azure/modtm/latest/docs/resources/telemetry) (resource)
 - [random_uuid.telemetry](https://registry.terraform.io/providers/hashicorp/random/latest/docs/resources/uuid) (resource)
 - [azapi_client_config.telemetry](https://registry.terraform.io/providers/Azure/azapi/latest/docs/data-sources/client_config) (data source)
+- [azurerm_resource_group.this](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/data-sources/resource_group) (data source)
 - [modtm_module_source.telemetry](https://registry.terraform.io/providers/azure/modtm/latest/docs/data-sources/module_source) (data source)
 
 <!-- markdownlint-disable MD013 -->
@@ -67,6 +70,9 @@ Type: `string`
 
 Description: - `days_of_week` - (Required) A list of Days of the Week on which this schedule will be used. Possible values are `Monday`, `Tuesday`, `Wednesday`, `Thursday`, `Friday`, `Saturday`, and `Sunday`
 - `name` - (Required) The name of the schedule.
+-
+- *** Pooled Scaling Plan Specific Parameters ***
+-
 - `off_peak_load_balancing_algorithm` - (Required) The load Balancing Algorithm to use during Off-Peak Hours. Possible values are `DepthFirst` and `BreadthFirst`.
 - `off_peak_start_time` - (Required) The time at which Off-Peak scaling will begin. This is also the end-time for the Ramp-Down period. The time must be specified in "HH:MM" format.
 - `peak_load_balancing_algorithm` - (Required) The load Balancing Algorithm to use during Peak Hours. Possible values are `DepthFirst` and `BreadthFirst`.
@@ -83,35 +89,102 @@ Description: - `days_of_week` - (Required) A list of Days of the Week on which t
 - `ramp_up_load_balancing_algorithm` - (Required) The load Balancing Algorithm to use during the Ramp-Up period. Possible values are `DepthFirst` and `BreadthFirst`.
 - `ramp_up_minimum_hosts_percent` - (Optional) Specifies the minimum percentage of session host virtual machines to start during ramp-up for peak hours. For example, if Minimum percentage of hosts is specified as `10%` and total number of session hosts in your host pool is `10`, autoscale will ensure a minimum of `1` session host is available to take user connections.
 - `ramp_up_start_time` - (Required) The time at which Ramp-Up scaling will begin. This is also the end-time for the Ramp-Up period. The time must be specified in "HH:MM" format.
+-
+- *** Personal Scaling Plan Specific Parameters ***
+-
+- `ramp_up_start_time_hour` - (Required) Starting time hour for ramp up period.
+- `ramp_up_start_time_minute` - (Required) Starting time minute for ramp up period.
+- `ramp_up_start_vm_on_connect` - (Required) The desired configuration of Start VM On Connect for the hostpool during the ramp up phase. If this is disabled, session hosts must be turned on using rampUpAutoStartHosts or by turning them on manually. Possible values are 'Enabled' and 'Disabled'.
+- `ramp_up_action_on_disconnect` - (Required) Action to be taken after a user disconnect during the ramp up period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `ramp_up_action_on_logoff` - (Required) Action to be taken after a logoff during the ramp up period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `ramp_up_auto_start_hosts` - (Required) The desired startup behavior during the ramp up period for personal vms in the hostpool. Possible values are 'All', 'None' and 'WithAssignedUser'.
+- `ramp_up_minutes_to_wait_on_disconnect` - (Required) The time in minutes to wait before performing the desired session handling action when a user disconnects during the ramp up period.
+- `ramp_up_minutes_to_wait_on_logoff` - (Required) The time in minutes to wait before performing the desired session handling action when a user logs off during the ramp up period.
+- `peak_start_time_hour` - (Required) Starting time hour for peak period.
+- `peak_start_time_minute` - (Required) Starting time minute for peak period.
+- `peak_start_vm_on_connect` - (Required) The desired configuration of Start VM On Connect for the hostpool during the peak phase. Possible values are 'Enabled' and 'Disabled'.
+- `peak_action_on_disconnect` - (Required) Action to be taken after a user disconnect during the peak period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `peak_action_on_logoff` - (Required) Action to be taken after a logoff during the peak period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `peak_minutes_to_wait_on_disconnect` - (Required) The time in minutes to wait before performing the desired session handling action when a user disconnects during the peak period.
+- `peak_minutes_to_wait_on_logoff` - (Required) The time in minutes to wait before performing the desired session handling action when a user logs off during the peak period.
+- `ramp_down_start_time_hour` - (Required) Starting time hour for ramp down period.
+- `ramp_down_start_time_minute` - (Required) Starting time minute for ramp down period.
+- `ramp_down_start_vm_on_connect` - (Required) The desired configuration of Start VM On Connect for the hostpool during the ramp down phase. Possible values are 'Enabled' and 'Disabled'.
+- `ramp_down_action_on_disconnect` - (Required) Action to be taken after a user disconnect during the ramp down period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `ramp_down_action_on_logoff` - (Required) Action to be taken after a logoff during the ramp down period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `ramp_down_minutes_to_wait_on_disconnect` - (Required) The time in minutes to wait before performing the desired session handling action when a user disconnects during the ramp down period.
+- `ramp_down_minutes_to_wait_on_logoff` - (Required) The time in minutes to wait before performing the desired session handling action when a user logs off during the ramp down period.
+- `off_peak_start_time_hour` - (Required) Starting time hour for off-peak period.
+- `off_peak_start_time_minute` - (Required) Starting time minute for off-peak period.
+- `off_peak_start_vm_on_connect` - (Required) The desired configuration of Start VM On Connect for the hostpool during the off-peak phase. Possible values are 'Enabled' and 'Disabled'.
+- `off_peak_action_on_disconnect` - (Required) Action to be taken after a user disconnect during the off-peak period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `off_peak_action_on_logoff` - (Required) Action to be taken after a logoff during the off-peak period. Possible values are 'Deallocate', 'Hibernate' and 'None'
+- `off_peak_minutes_to_wait_on_disconnect` - (Required) The time in minutes to wait before performing the desired session handling action when a user disconnects during the off-peak period.
+- `off_peak_minutes_to_wait_on_logoff` - (Required) The time in minutes to wait before performing the desired session handling action when a user logs off during the off-peak period.
 
 Type:
 
 ```hcl
 list(object({
-    days_of_week                         = set(string)
-    name                                 = string
-    off_peak_load_balancing_algorithm    = string
-    off_peak_start_time                  = string
-    peak_load_balancing_algorithm        = string
-    peak_start_time                      = string
-    ramp_down_capacity_threshold_percent = number
-    ramp_down_force_logoff_users         = bool
-    ramp_down_load_balancing_algorithm   = string
-    ramp_down_minimum_hosts_percent      = number
-    ramp_down_notification_message       = string
-    ramp_down_start_time                 = string
-    ramp_down_stop_hosts_when            = string
-    ramp_down_wait_time_minutes          = number
-    ramp_up_capacity_threshold_percent   = optional(number)
-    ramp_up_load_balancing_algorithm     = string
-    ramp_up_minimum_hosts_percent        = optional(number)
-    ramp_up_start_time                   = string
+    days_of_week                            = set(string)
+    name                                    = string
+    off_peak_load_balancing_algorithm       = optional(string)
+    off_peak_start_time                     = optional(string)
+    peak_load_balancing_algorithm           = optional(string)
+    peak_start_time                         = optional(string)
+    ramp_down_capacity_threshold_percent    = optional(number)
+    ramp_down_force_logoff_users            = optional(bool)
+    ramp_down_load_balancing_algorithm      = optional(string)
+    ramp_down_minimum_hosts_percent         = optional(number)
+    ramp_down_notification_message          = optional(string)
+    ramp_down_start_time                    = optional(string)
+    ramp_down_stop_hosts_when               = optional(string)
+    ramp_down_wait_time_minutes             = optional(number)
+    ramp_up_capacity_threshold_percent      = optional(number)
+    ramp_up_load_balancing_algorithm        = optional(string)
+    ramp_up_minimum_hosts_percent           = optional(number)
+    ramp_up_start_time                      = optional(string)
+    ramp_up_start_time_hour                 = optional(number)
+    ramp_up_start_time_minute               = optional(number)
+    ramp_up_auto_start_hosts                = optional(string)
+    ramp_up_start_vm_on_connect             = optional(string)
+    ramp_up_minutes_to_wait_on_disconnect   = optional(number)
+    ramp_up_action_on_disconnect            = optional(string)
+    ramp_up_minutes_to_wait_on_logoff       = optional(number)
+    ramp_up_action_on_logoff                = optional(string)
+    peak_start_time_hour                    = optional(number)
+    peak_start_time_minute                  = optional(number)
+    peak_start_vm_on_connect                = optional(string)
+    peak_minutes_to_wait_on_disconnect      = optional(number)
+    peak_action_on_disconnect               = optional(string)
+    peak_minutes_to_wait_on_logoff          = optional(number)
+    peak_action_on_logoff                   = optional(string)
+    ramp_down_start_time_hour               = optional(number)
+    ramp_down_start_time_minute             = optional(number)
+    ramp_down_start_vm_on_connect           = optional(string)
+    ramp_down_minutes_to_wait_on_disconnect = optional(number)
+    ramp_down_action_on_disconnect          = optional(string)
+    ramp_down_minutes_to_wait_on_logoff     = optional(number)
+    ramp_down_action_on_logoff              = optional(string)
+    off_peak_start_time_hour                = optional(number)
+    off_peak_start_time_minute              = optional(number)
+    off_peak_start_vm_on_connect            = optional(string)
+    off_peak_minutes_to_wait_on_disconnect  = optional(number)
+    off_peak_action_on_disconnect           = optional(string)
+    off_peak_minutes_to_wait_on_logoff      = optional(number)
+    off_peak_action_on_logoff               = optional(string)
   }))
 ```
 
 ### <a name="input_virtual_desktop_scaling_plan_time_zone"></a> [virtual\_desktop\_scaling\_plan\_time\_zone](#input\_virtual\_desktop\_scaling\_plan\_time\_zone)
 
 Description: (Required) Specifies the Time Zone which should be used by the Scaling Plan for time based events, [the possible values are defined here](https://jackstromberg.com/2017/01/list-of-time-zones-consumed-by-azure/).
+
+Type: `string`
+
+### <a name="input_virtual_desktop_scaling_plan_type"></a> [virtual\_desktop\_scaling\_plan\_type](#input\_virtual\_desktop\_scaling\_plan\_type)
+
+Description: (Required) The scaling plan type which will be used for pooled or personal pool. Valid options are `Personal` or `Pooled` Changing this forces a new Virtual Desktop Scaling Plan to be created.
 
 Type: `string`
 

@@ -154,6 +154,7 @@ module "scplan" {
     ]
   )
   virtual_desktop_scaling_plan_time_zone = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_type      = "Pooled"
   diagnostic_settings = {
     to_law = {
       name                        = "to-storage-account"
