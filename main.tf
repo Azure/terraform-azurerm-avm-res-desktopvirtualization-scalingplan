@@ -33,6 +33,7 @@ resource "azurerm_virtual_desktop_scaling_plan" "this" {
       ramp_up_minimum_hosts_percent        = schedule.value.ramp_up_minimum_hosts_percent
     }
   }
+
   dynamic "host_pool" {
     for_each = var.virtual_desktop_scaling_plan_host_pool == null ? [] : var.virtual_desktop_scaling_plan_host_pool
 
@@ -41,6 +42,7 @@ resource "azurerm_virtual_desktop_scaling_plan" "this" {
       scaling_plan_enabled = host_pool.value.scaling_plan_enabled
     }
   }
+
   dynamic "timeouts" {
     for_each = var.virtual_desktop_scaling_plan_timeouts == null ? [] : [var.virtual_desktop_scaling_plan_timeouts]
 
@@ -93,7 +95,6 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     }
   }
 }
-
 
 # required AVM resources interfaces
 resource "azurerm_management_lock" "this" {
