@@ -11,11 +11,11 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = ">= 2.44.1, < 3.0.0"
+      version = ">= 2.44.1, < 3.9.1"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 3.71, < 5.0.0"
+      version = ">= 3.71, < 5.0.2"
     }
     random = {
       source  = "hashicorp/random"
@@ -35,7 +35,7 @@ provider "azurerm" {
 # This ensures we have unique CAF compliant names for our resources.
 module "naming" {
   source  = "Azure/naming/azurerm"
-  version = "0.3.0"
+  version = "0.4.3"
 }
 
 # This is required for resource modules
@@ -61,7 +61,7 @@ resource "azurerm_storage_account" "storageaccount" {
 
 module "hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.2.0"
+  version = "0.4.0"
 
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
@@ -181,9 +181,9 @@ The following requirements are needed by this module:
 
 - <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) (>= 1.9, < 2.0)
 
-- <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.44.1, < 3.0.0)
+- <a name="requirement_azuread"></a> [azuread](#requirement\_azuread) (>= 2.44.1, < 3.9.1)
 
-- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.0)
+- <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) (>= 3.71, < 5.0.2)
 
 - <a name="requirement_random"></a> [random](#requirement\_random) (>= 3.1.0, < 4.0.0)
 
@@ -238,13 +238,13 @@ The following Modules are called:
 
 Source: Azure/avm-res-desktopvirtualization-hostpool/azurerm
 
-Version: 0.2.0
+Version: 0.4.0
 
 ### <a name="module_naming"></a> [naming](#module\_naming)
 
 Source: Azure/naming/azurerm
 
-Version: 0.3.0
+Version: 0.4.3
 
 ### <a name="module_scplan"></a> [scplan](#module\_scplan)
 
