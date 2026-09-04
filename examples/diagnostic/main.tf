@@ -37,8 +37,6 @@ resource "azurerm_resource_group" "this" {
   name     = module.naming.resource_group.name_unique
 }
 
-
-
 # This is the storage account for the diagnostic settings
 resource "azurerm_storage_account" "storageaccount" {
   account_replication_type = "ZRS"
@@ -93,7 +91,6 @@ resource "azurerm_role_assignment" "new" {
     ignore_changes = all
   }
 }
-
 
 # This is the module call
 module "scplan" {
