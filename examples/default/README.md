@@ -138,6 +138,7 @@ module "scplan" {
     ]
   )
   virtual_desktop_scaling_plan_time_zone = "Eastern Standard Time"
+  virtual_desktop_scaling_plan_type      = "Pooled"
   enable_telemetry                       = var.enable_telemetry
   virtual_desktop_scaling_plan_host_pool = toset(
     [
