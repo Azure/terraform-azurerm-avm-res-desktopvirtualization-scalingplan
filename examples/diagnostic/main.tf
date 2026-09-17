@@ -60,7 +60,7 @@ module "hostpool" {
   virtual_desktop_host_pool_name                     = "vdpool-avd-02"
   virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"
-  enable_telemetry                                   = var.enable_telemetry
+  enable_telemetry                                   = false
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
 }
 
@@ -150,7 +150,7 @@ module "scplan" {
       storage_account_resource_id = azurerm_storage_account.storageaccount.id
     }
   }
-  enable_telemetry = var.enable_telemetry
+  enable_telemetry = false
   virtual_desktop_scaling_plan_host_pool = toset(
     [
       {
