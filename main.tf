@@ -1,6 +1,6 @@
 # autoscale settings https://docs.microsoft.com/azure/virtual-desktop/autoscale-scenarios
 resource "azurerm_virtual_desktop_scaling_plan" "this" {
-  location            = var.virtual_desktop_scaling_plan_location
+  location            = var.location
   name                = var.virtual_desktop_scaling_plan_name
   resource_group_name = var.virtual_desktop_scaling_plan_resource_group_name
   time_zone           = var.virtual_desktop_scaling_plan_time_zone
