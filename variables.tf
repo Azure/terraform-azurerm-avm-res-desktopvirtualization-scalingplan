@@ -1,4 +1,4 @@
-variable "virtual_desktop_scaling_plan_location" {
+variable "location" {
   type        = string
   description = "(Required) The Azure Region where the Virtual Desktop Scaling Plan should exist. Changing this forces a new Virtual Desktop Scaling Plan to be created."
   nullable    = false

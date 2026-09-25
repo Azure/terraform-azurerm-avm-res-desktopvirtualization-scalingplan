@@ -25,5 +25,5 @@ resource "modtm_telemetry" "telemetry" {
 }
 
 locals {
-  main_location = "unknown"
+  main_location = var.location
 }

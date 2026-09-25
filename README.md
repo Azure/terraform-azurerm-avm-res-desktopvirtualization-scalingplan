@@ -45,7 +45,7 @@ The following resources are used by this module:
 
 The following input variables are required:
 
-### <a name="input_virtual_desktop_scaling_plan_location"></a> [virtual\_desktop\_scaling\_plan\_location](#input\_virtual\_desktop\_scaling\_plan\_location)
+### <a name="input_location"></a> [location](#input\_location)
 
 Description: (Required) The Azure Region where the Virtual Desktop Scaling Plan should exist. Changing this forces a new Virtual Desktop Scaling Plan to be created.
 
