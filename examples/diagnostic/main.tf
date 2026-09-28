@@ -160,5 +160,5 @@ module "scplan" {
     ]
   )
 
-  depends_on = [azurerm_resource_group.this, module.hostpool]
+  depends_on = [azurerm_resource_group.this, module.hostpool, azurerm_role_assignment.new]
 }
