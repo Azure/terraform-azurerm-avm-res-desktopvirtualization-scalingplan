@@ -96,7 +96,7 @@ resource "azurerm_role_assignment" "new" {
 module "scplan" {
   source = "../../"
 
-  virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
+  location                                         = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_name                = "avdscalingplan"
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_scaling_plan_schedule = toset(
@@ -160,5 +160,5 @@ module "scplan" {
     ]
   )
 
-  depends_on = [azurerm_resource_group.this, module.hostpool]
+  depends_on = [azurerm_resource_group.this, module.hostpool, azurerm_role_assignment.new]
 }

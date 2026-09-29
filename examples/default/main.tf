@@ -83,7 +83,7 @@ resource "azurerm_role_assignment" "new" {
 module "scplan" {
   source = "../../"
 
-  virtual_desktop_scaling_plan_location            = azurerm_resource_group.this.location
+  location                                         = azurerm_resource_group.this.location
   virtual_desktop_scaling_plan_name                = "avdscalingplan"
   virtual_desktop_scaling_plan_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_scaling_plan_schedule = toset(
@@ -96,7 +96,7 @@ module "scplan" {
         ramp_up_minimum_hosts_percent        = 50
         ramp_up_capacity_threshold_percent   = 80
         peak_start_time                      = "10:00"
-        peak_load_balancing_algorithm        = "DepthFirst"
+        peak_load_balancing_algorithm        = "BreadthFirst"
         ramp_down_start_time                 = "17:00"
         ramp_down_load_balancing_algorithm   = "BreadthFirst"
         ramp_down_minimum_hosts_percent      = 50
@@ -141,5 +141,5 @@ module "scplan" {
     ]
   )
 
-  depends_on = [azurerm_resource_group.this, module.hostpool]
+  depends_on = [azurerm_resource_group.this, module.hostpool, azurerm_role_assignment.new]
 }
