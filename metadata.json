@@ -4,7 +4,6 @@
   "moduleDescription": "AVM Resource Module for Azure Virtual Desktop (AVD) Scaling Plan",
   "canonicalType": "Microsoft.DesktopVirtualization/scalingPlans",
   "owners": [
-    "jensheerin",
     "sihbher"
   ],
   "telemetryIdPrefix": "46d3xtrf.res.a56c990"
