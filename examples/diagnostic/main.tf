@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = ">= 2.44.1, < 3.0.0"
+      version = ">= 2.44.1, < 3.10.1"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -52,7 +52,7 @@ resource "azurerm_storage_account" "storageaccount" {
 
 module "hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.2.0"
+  version = "0.5.0"
 
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
