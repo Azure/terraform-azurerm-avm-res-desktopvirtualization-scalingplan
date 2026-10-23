@@ -4,7 +4,7 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = ">= 2.44.1, < 3.0.0"
+      version = ">= 2.44.1, < 3.10.1"
     }
     azurerm = {
       source  = "hashicorp/azurerm"
@@ -52,16 +52,17 @@ resource "azurerm_storage_account" "storageaccount" {
 
 module "hostpool" {
   source  = "Azure/avm-res-desktopvirtualization-hostpool/azurerm"
-  version = "0.2.0"
+  version = "0.5.0"
 
+  location                                           = var.location
   resource_group_name                                = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst"
-  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
   virtual_desktop_host_pool_name                     = "vdpool-avd-02"
   virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
   virtual_desktop_host_pool_type                     = "Pooled"
   enable_telemetry                                   = var.enable_telemetry
   virtual_desktop_host_pool_maximum_sessions_allowed = "16"
+  virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
 }
 
 # Get the subscription
